@@ -26,6 +26,12 @@ jobs:
       - name: Run genre.py
         run: python genre.py
 
+      - name: Upload CSV as Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: updated-data
+          path: vgsales_updated.csv
+
       - name: Commit & Push results
         run: |
           git config --global user.name "github-actions"
