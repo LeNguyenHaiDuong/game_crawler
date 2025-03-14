@@ -34,9 +34,3 @@ jobs:
           git commit -m "Auto-save progress" || echo "No changes to commit"
           git push origin master
           
-
-      - name: Upload CSV as Artifact
-        uses: actions/upload-artifact@v4  # Cập nhật từ v3 lên v4
-        with:
-          name: updated-data
-          path: vgsales_updated.csv  # Đường dẫn chính xác đến file CSV
