@@ -63,7 +63,7 @@ for idx, url in rows_to_update:
     idx, new_Genre = process_row(idx, url)  # Gọi hàm lấy Genre
     while (len(new_Genre) > 20):
         df.to_csv("vgsales_updated.csv", index=False)
-        print(f"Saved {count} rows and checkpoint at line {idx}")
+        print(f"Saved until line {idx}")
         print("Retry in 180s")
         time.sleep(180)
         idx, new_Genre = process_row(idx, url)  # Gọi hàm lấy Genre
