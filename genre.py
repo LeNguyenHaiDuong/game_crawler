@@ -4,6 +4,14 @@ from bs4 import BeautifulSoup
 import time
 import random
 
+batch_id = int(sys.argv[1])  # Nhận batch_id từ GitHub Actions
+batch_size = 10000  # Mỗi workflow xử lý 10.000 dòng
+
+# Xác định phạm vi dòng cần xử lý
+start_idx = batch_id * batch_size
+end_idx = start_idx + batch_size
+
+
 USER_AGENTS = [
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
     "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36",
@@ -16,7 +24,8 @@ try:
     print("Đang tải dữ liệu từ vgsales_updated.csv để tiếp tục cập nhật.")
     cols_to_read = ["Rank", "Genre"]  # Chỉ đọc cột cần thiết
     df = pd.read_csv("vgsales_updated.csv", usecols=cols_to_read, low_memory=False)
-    print("Đã tải dữ liệu từ vgsales_updated.csv để tiếp tục cập nhật.")
+    df = df.iloc[start_idx:end_idx]
+    print(f"✅ Processing Batch {batch_id}: Rows {start_idx} to {end_idx}")
 except FileNotFoundError:
     # Nếu file đã cập nhật tồn tại, thì đọc vào để tránh ghi đè dữ liệu đã có
     df = pd.read_csv("vgsales.csv", low_memory=False)
@@ -54,6 +63,7 @@ def process_row(idx, url):
     Genre = get_Genre(url)
     return idx, Genre
 
+output_file = f"data/vgsales_updated_{batch_id}.csv"
 
 # Lọc các dòng cần cập nhật (chỉ cập nhật nếu vẫn là URL)
 rows_to_update = [(idx, row["Genre"]) for idx, row in df.iterrows() if len(row["Genre"]) > 20]
@@ -62,7 +72,7 @@ print(f"Done filtering, update list from {rows_to_update[0]}")
 for idx, url in rows_to_update:
     idx, new_Genre = process_row(idx, url)  # Gọi hàm lấy Genre
     while (len(new_Genre) > 20):
-        df.to_csv("vgsales_updated.csv", index=False)
+        df.to_csv(output_file, index=False)
         print(f"Saved until line {idx}")
         print("Retry in 180s")
         time.sleep(180)
@@ -72,6 +82,8 @@ for idx, url in rows_to_update:
     df.at[idx, "Genre"] = new_Genre  # Cập nhật giá trị mới
         
 
-# Lưu file lần cuối sau khi hoàn tất
-df.to_csv("vgsales_updated.csv", index=False)
-print("Hoàn tất cập nhật, dữ liệu đã lưu vào 'vgsales_updated.csv'!")
+
+df.to_csv(output_file, index=False)
+print(f"✅ Saved {output_file}")
+
+
