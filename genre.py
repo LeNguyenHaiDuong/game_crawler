@@ -12,6 +12,8 @@ batch_size = 10000  # Mỗi workflow xử lý 10.000 dòng
 start_idx = batch_id * batch_size
 end_idx = start_idx + batch_size
 
+# Đọc và ghi từ file này
+output_file = f"data/vgsales_updated_{batch_id}.csv"
 
 USER_AGENTS = [
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
@@ -24,12 +26,12 @@ try:
     # Đọc file CSV gốc
     print("Đang tải dữ liệu từ vgsales_updated.csv để tiếp tục cập nhật.")
     cols_to_read = ["Rank", "Genre"]  # Chỉ đọc cột cần thiết
-    df = pd.read_csv("vgsales_updated.csv", usecols=cols_to_read, low_memory=False)
+    df = pd.read_csv(output_file, usecols=cols_to_read, low_memory=False)
     df = df.iloc[start_idx:end_idx]
     print(f"✅ Processing Batch {batch_id}: Rows {start_idx} to {end_idx}")
 except FileNotFoundError:
     # Nếu file đã cập nhật tồn tại, thì đọc vào để tránh ghi đè dữ liệu đã có
-    df = pd.read_csv("vgsales.csv", low_memory=False)
+    df = pd.read_csv("vgsales_updated.csv", low_memory=False)
     print("Không tìm thấy vgsales_updated.csv, sẽ tạo file mới.")
 
 # Kiểm tra cột Genre có tồn tại
@@ -63,8 +65,6 @@ def process_row(idx, url):
     """Hàm xử lý từng dòng, gọi get_Genre với URL."""
     Genre = get_Genre(url)
     return idx, Genre
-
-output_file = f"data/vgsales_updated_{batch_id}.csv"
 
 # Lọc các dòng cần cập nhật (chỉ cập nhật nếu vẫn là URL)
 rows_to_update = [(idx, row["Genre"]) for idx, row in df.iterrows() if len(row["Genre"]) > 20]
