@@ -50,10 +50,11 @@ def get_Genre(url):
             if h2.string == "Genre":
                 return h2.next_sibling.string.strip()
 
-        time.sleep(5)
+        time.sleep(10)
     
     except:
         print("Cannot get:", url)
+        time.sleep(60)
         return url  # Trả về lỗi để xử lý sau
 
 def process_row(idx, url):
@@ -68,17 +69,32 @@ rows_to_update = [(idx, row["Genre"]) for idx, row in df.iterrows() if url_patte
 batch_size = 100
 count = 0
 
-for idx, url in rows_to_update:
-    idx, new_Genre = process_row(idx, url)
-    if (len(new_Genre) > 20):
-        break
-    df.at[idx, "Genre"] = new_Genre  # Cập nhật giá trị mới
-    count += 1
+retries = 3  # Số lần thử lại tối đa
+attempt = 0  # Đếm số lần thử
 
-    # Cứ 20 dòng thì lưu file lại một lần
+for idx, url in rows_to_update:
+    while attempt < retries:
+        attempt += 1
+        idx, new_Genre = process_row(idx, url)  # Gọi hàm lấy Genre
+
+        if len(new_Genre) > 20:  # Kiểm tra giá trị hợp lệ
+            df.at[idx, "Genre"] = new_Genre  # Cập nhật giá trị mới
+            count += 1
+            break  # Thành công, thoát khỏi vòng lặp
+        else:
+            print(f"Attempt {attempt}/{retries} failed for {url}. Retrying...")
+            time.sleep(5 * attempt)  # Chờ lâu hơn trước mỗi lần thử lại
+        
+
+    # Cứ batch_size dòng thì lưu file lại một lần
     if count % batch_size == 0:
         df.to_csv("vgsales_updated.csv", index=False)
         print(f"Đã lưu đến index {idx} vào 'vgsales_updated.csv'.")
+
+        # Commit tạm thời
+        os.system('git add vgsales_updated.csv')
+        os.system('git commit -m "Auto-save progress" || echo "No changes to commit"')
+        os.system('git push origin master')
 
 # Lưu file lần cuối sau khi hoàn tất
 df.to_csv("vgsales_updated.csv", index=False)
