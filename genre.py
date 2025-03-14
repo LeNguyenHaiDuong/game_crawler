@@ -91,11 +91,6 @@ for idx, url in rows_to_update:
         df.to_csv("vgsales_updated.csv", index=False)
         print(f"Đã lưu đến index {idx} vào 'vgsales_updated.csv'.")
 
-        # Commit tạm thời
-        os.system('git add vgsales_updated.csv')
-        os.system('git commit -m "Auto-save progress" || echo "No changes to commit"')
-        os.system('git push origin master')
-
 # Lưu file lần cuối sau khi hoàn tất
 df.to_csv("vgsales_updated.csv", index=False)
 print("Hoàn tất cập nhật, dữ liệu đã lưu vào 'vgsales_updated.csv'!")
