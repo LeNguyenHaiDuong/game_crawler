@@ -27,11 +27,11 @@ try:
     print("Đang tải dữ liệu từ vgsales_updated.csv để tiếp tục cập nhật.")
     cols_to_read = ["Rank", "Genre"]  # Chỉ đọc cột cần thiết
     df = pd.read_csv(output_file, usecols=cols_to_read, low_memory=False)
-    df = df.iloc[start_idx:end_idx]
     print(f"✅ Processing Batch {batch_id}: Rows {start_idx} to {end_idx}")
 except FileNotFoundError:
     # Nếu file đã cập nhật tồn tại, thì đọc vào để tránh ghi đè dữ liệu đã có
     df = pd.read_csv("vgsales_updated.csv", low_memory=False)
+    df = df.iloc[start_idx:end_idx]
     print("Không tìm thấy vgsales_updated.csv, sẽ tạo file mới.")
 
 # Kiểm tra cột Genre có tồn tại
