@@ -48,8 +48,6 @@ def get_Genre(url):
         for h2 in h2s:
             if h2.string == "Genre":
                 return h2.next_sibling.string.strip()
-
-        time.sleep(30)
     
     except:
         print("Cannot get:", url)
@@ -63,7 +61,7 @@ def process_row(idx, url):
 
 
 # Biến đếm số dòng đã xử lý
-batch_size = 100
+batch_size = 30
 count = 0
 
 
@@ -73,20 +71,21 @@ rows_to_update = [(idx, row["Genre"]) for idx, row in df.iterrows() if url_patte
 
 for idx, url in rows_to_update:
     idx, new_Genre = process_row(idx, url)  # Gọi hàm lấy Genre
-
-    if len(new_Genre) < 20:  # Kiểm tra giá trị hợp lệ
-        df.at[idx, "Genre"] = new_Genre  # Cập nhật giá trị mới
-        count += 1
-    else:
-        break
+    while (new_Genre > 20):
+        print("Retry in 180s")
+        time.sleep(180)
+        idx, new_Genre = process_row(idx, url)  # Gọi hàm lấy Genre
+        
+    df.at[idx, "Genre"] = new_Genre  # Cập nhật giá trị mới
+    count += 1
         
 
     # Cứ batch_size dòng thì lưu file lại một lần
-    if count != 0 and count % batch_size == 0:
+    if count == batch_size:
         df.to_csv("vgsales_updated.csv", index=False)
         print(f"Saved {count} rows and checkpoint at line {idx}")
         count = 0
-        time.sleep(300)
+        time.sleep(180)
 
 # Lưu file lần cuối sau khi hoàn tất
 df.to_csv("vgsales_updated.csv", index=False)
