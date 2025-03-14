@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup
 import time
 import re
 from concurrent.futures import ThreadPoolExecutor, as_completed
+import os 
 
 import random
 
