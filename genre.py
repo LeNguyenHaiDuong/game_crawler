@@ -71,7 +71,7 @@ rows_to_update = [(idx, row["Genre"]) for idx, row in df.iterrows() if url_patte
 
 for idx, url in rows_to_update:
     idx, new_Genre = process_row(idx, url)  # Gọi hàm lấy Genre
-    while (new_Genre > 20):
+    while (len(new_Genre) > 20):
         print("Retry in 180s")
         time.sleep(180)
         idx, new_Genre = process_row(idx, url)  # Gọi hàm lấy Genre
