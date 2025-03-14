@@ -74,7 +74,7 @@ rows_to_update = [(idx, row["Genre"]) for idx, row in df.iterrows() if url_patte
 for idx, url in rows_to_update:
     idx, new_Genre = process_row(idx, url)  # Gọi hàm lấy Genre
 
-    if len(new_Genre) > 20:  # Kiểm tra giá trị hợp lệ
+    if len(new_Genre) < 20:  # Kiểm tra giá trị hợp lệ
         df.at[idx, "Genre"] = new_Genre  # Cập nhật giá trị mới
         count += 1
     else:
