@@ -1,7 +1,7 @@
 name: Genre Crawler
 
 on:
-  workflow_dispatch:  # Chạy thủ công khi bấm nút "Run workflow" trên GitHub
+  workflow_dispatch:  # Chạy thủ công khi bấm "Run workflow" trên GitHub
 
 jobs:
   scrape:
@@ -13,7 +13,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}  # Sử dụng token để có quyền push
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -26,16 +26,16 @@ jobs:
       - name: Run genre.py
         run: python genre.py
 
-      - name: Upload CSV as Artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: updated-data
-          path: vgsales_updated.csv
-
-      - name: Commit & Push results
+      - name: Save progress to GitHub
         run: |
           git config --global user.name "github-actions"
           git config --global user.email "actions@github.com"
-          git add vgsales_updated.csv
-          git commit -m "Update scraped data" || echo "No changes to commit"
-          git push origin master
+          git add vgsales_updated.csv checkpoint.txt
+          git commit -m "Auto-save progress" || echo "No changes to commit"
+          git push origin main
+
+      - name: Upload CSV as Artifact
+        uses: actions/upload-artifact@v4  # Cập nhật từ v3 lên v4
+        with:
+          name: updated-data
+          path: vgsales_updated.csv  # Đường dẫn chính xác đến file CSV
