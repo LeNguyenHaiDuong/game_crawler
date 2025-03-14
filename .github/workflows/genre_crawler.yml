@@ -43,6 +43,14 @@ jobs:
         run: |
           git config --global user.name "github-actions"
           git config --global user.email "actions@github.com"
-          git add vgsales_updated_${{ matrix.batch_id }}.csv
-          git commit -m "Batch ${{ matrix.batch_id }} progress" || echo "No changes to commit"
-          git push origin master || echo "Git push failed, but data is saved in Artifacts"
+          
+          FILE_PATH="data/vgsales_updated_${{ matrix.batch_id }}.csv"
+          
+          # Kiểm tra xem file có tồn tại không trước khi add vào Git
+          if [ -f "$FILE_PATH" ]; then
+            git add "$FILE_PATH"
+            git commit -m "Batch ${{ matrix.batch_id }} progress"
+            git push origin master
+          else
+            echo "⚠️ No file found at $FILE_PATH, skipping commit."
+          fi
