@@ -5,6 +5,15 @@ import time
 import re
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
+import random
+
+USER_AGENTS = [
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36",
+    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36",
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:118.0) Gecko/20100101 Firefox/118.0"
+]
+
 # Đọc file CSV gốc
 
 # Nếu file đã cập nhật tồn tại, thì đọc vào để tránh ghi đè dữ liệu đã có
@@ -23,9 +32,11 @@ if "Genre" not in df.columns:
 url_pattern = re.compile(r"^https?://")
 
 def get_Genre(url):
-    """Hàm lấy thể loại game từ URL."""
+    headers = {
+        "User-Agent": random.choice(USER_AGENTS)
+    }
     try:
-        response = requests.get(url, timeout=10)
+        response = requests.get(url, headers=headers, timeout=10)
         response.raise_for_status()  # Kiểm tra lỗi HTTP
         soup = BeautifulSoup(response.text, "html.parser")
         
@@ -59,6 +70,8 @@ count = 0
 
 for idx, url in rows_to_update:
     idx, new_Genre = process_row(idx, url)
+    if (len(new_Genre) > 20):
+        break
     df.at[idx, "Genre"] = new_Genre  # Cập nhật giá trị mới
     count += 1
 
