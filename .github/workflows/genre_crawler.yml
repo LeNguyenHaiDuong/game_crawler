@@ -48,11 +48,4 @@ jobs:
           
           FILE_PATH="data/vgsales_updated_${{ matrix.batch_id }}.csv"
           
-          # Kiểm tra xem file có tồn tại không trước khi add vào Git
-          if [ -f "$FILE_PATH" ]; then
-            git add "$FILE_PATH"
-            git commit -m "Batch ${{ matrix.batch_id }} progress"
-            git push origin master
-          else
-            echo "⚠️ No file found at $FILE_PATH, skipping commit."
-          fi
+          git diff --quiet || (git add data/ && git commit -m "Batch ${{ matrix.batch_id }} progress" && git push origin master) || echo "⚠️ No changes detected, skipping commit."
