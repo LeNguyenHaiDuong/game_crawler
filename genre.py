@@ -62,17 +62,30 @@ def process_row(idx, url):
     Genre = get_Genre(url)
     return idx, Genre
 
-# Lọc các dòng cần cập nhật (chỉ cập nhật nếu vẫn là URL)
-rows_to_update = [(idx, row["Genre"]) for idx, row in df.iterrows() if url_pattern.match(str(row["Genre"]).strip())]
+
 
 # Biến đếm số dòng đã xử lý
 batch_size = 100
 count = 0
 
-retries = 3  # Số lần thử lại tối đa
-attempt = 0  # Đếm số lần thử
+
+
+# Đọc checkpoint (dòng cuối cùng đã cập nhật)
+checkpoint_file = "checkpoint.txt"
+if os.path.exists(checkpoint_file):
+    with open(checkpoint_file, "r") as f:
+        last_index = int(f.read().strip())
+else:
+    last_index = 0  # Nếu không có checkpoint, bắt đầu từ đầu
+
+# Lọc các dòng cần cập nhật (chỉ cập nhật nếu vẫn là URL)
+rows_to_update = [(idx, row["Genre"]) for idx, row in df[last_index:].iterrows() if url_pattern.match(str(row["Genre"]).strip())]
+
 
 for idx, url in rows_to_update:
+    retries = 3  # Số lần thử lại tối đa
+    attempt = 0  # Đếm số lần thử
+    
     while attempt < retries:
         attempt += 1
         idx, new_Genre = process_row(idx, url)  # Gọi hàm lấy Genre
@@ -89,7 +102,9 @@ for idx, url in rows_to_update:
     # Cứ batch_size dòng thì lưu file lại một lần
     if count % batch_size == 0:
         df.to_csv("vgsales_updated.csv", index=False)
-        print(f"Đã lưu đến index {idx} vào 'vgsales_updated.csv'.")
+        with open(checkpoint_file, "w") as f:
+            f.write(str(idx))  # Lưu dòng cuối cùng đã xử lý
+        print(f"Saved {count} rows and checkpoint at line {idx}")
 
 # Lưu file lần cuối sau khi hoàn tất
 df.to_csv("vgsales_updated.csv", index=False)
