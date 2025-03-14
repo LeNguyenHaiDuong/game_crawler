@@ -86,6 +86,7 @@ for idx, url in rows_to_update:
         df.to_csv("vgsales_updated.csv", index=False)
         print(f"Saved {count} rows and checkpoint at line {idx}")
         count = 0
+        time.sleep(300)
 
 # Lưu file lần cuối sau khi hoàn tất
 df.to_csv("vgsales_updated.csv", index=False)
