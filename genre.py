@@ -2,9 +2,6 @@ import pandas as pd
 import requests
 from bs4 import BeautifulSoup
 import time
-import re
-from concurrent.futures import ThreadPoolExecutor, as_completed
-
 import random
 
 USER_AGENTS = [
@@ -28,9 +25,6 @@ except FileNotFoundError:
 # Kiểm tra cột Genre có tồn tại
 if "Genre" not in df.columns:
     raise ValueError("Cột 'Genre' không tồn tại trong file CSV!")
-
-# Biểu thức chính quy kiểm tra URL hợp lệ
-url_pattern = re.compile(r"^https?://")
 
 def get_Genre(url):
     headers = {
@@ -61,34 +55,22 @@ def process_row(idx, url):
     return idx, Genre
 
 
-
-# Biến đếm số dòng đã xử lý
-batch_size = 30
-count = 0
-
-
 # Lọc các dòng cần cập nhật (chỉ cập nhật nếu vẫn là URL)
-rows_to_update = [(idx, row["Genre"]) for idx, row in df.iterrows() if url_pattern.match(str(row["Genre"]).strip())]
+rows_to_update = [(idx, row["Genre"]) for idx, row in df.iterrows() if len(row["Genre"]) > 20]
 print(f"Done filtering, update list from {rows_to_update[0]}")
 
 for idx, url in rows_to_update:
     idx, new_Genre = process_row(idx, url)  # Gọi hàm lấy Genre
     while (len(new_Genre) > 20):
+        df.to_csv("vgsales_updated.csv", index=False)
+        print(f"Saved {count} rows and checkpoint at line {idx}")
         print("Retry in 180s")
         time.sleep(180)
         idx, new_Genre = process_row(idx, url)  # Gọi hàm lấy Genre
 
     print(f"Update indx {idx}")
     df.at[idx, "Genre"] = new_Genre  # Cập nhật giá trị mới
-    count += 1
         
-
-    # Cứ batch_size dòng thì lưu file lại một lần
-    if count == batch_size:
-        df.to_csv("vgsales_updated.csv", index=False)
-        print(f"Saved {count} rows and checkpoint at line {idx}")
-        count = 0
-        time.sleep(180)
 
 # Lưu file lần cuối sau khi hoàn tất
 df.to_csv("vgsales_updated.csv", index=False)
