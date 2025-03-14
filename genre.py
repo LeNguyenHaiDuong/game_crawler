@@ -67,7 +67,7 @@ count = 0
 
 # Lọc các dòng cần cập nhật (chỉ cập nhật nếu vẫn là URL)
 rows_to_update = [(idx, row["Genre"]) for idx, row in df.iterrows() if url_pattern.match(str(row["Genre"]).strip())]
-
+print(f"Done filtering, update list from {rows_to_update[0]}")
 
 for idx, url in rows_to_update:
     idx, new_Genre = process_row(idx, url)  # Gọi hàm lấy Genre
@@ -75,7 +75,8 @@ for idx, url in rows_to_update:
         print("Retry in 180s")
         time.sleep(180)
         idx, new_Genre = process_row(idx, url)  # Gọi hàm lấy Genre
-        
+
+    print(f"Update indx {idx}")
     df.at[idx, "Genre"] = new_Genre  # Cập nhật giá trị mới
     count += 1
         
