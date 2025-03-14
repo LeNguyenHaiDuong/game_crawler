@@ -16,6 +16,7 @@ USER_AGENTS = [
 
 try:
     # Đọc file CSV gốc
+    print("Đang tải dữ liệu từ vgsales_updated.csv để tiếp tục cập nhật.")
     cols_to_read = ["Rank", "Genre"]  # Chỉ đọc cột cần thiết
     df = pd.read_csv("vgsales_updated.csv", usecols=cols_to_read, low_memory=False)
     print("Đã tải dữ liệu từ vgsales_updated.csv để tiếp tục cập nhật.")
