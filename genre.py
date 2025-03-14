@@ -16,7 +16,7 @@ USER_AGENTS = [
 
 try:
     # Đọc file CSV gốc
-   df = pd.read_csv("vgsales_updated.csv", low_memory=False)
+    df = pd.read_csv("vgsales_updated.csv", low_memory=False)
     print("Đã tải dữ liệu từ vgsales_updated.csv để tiếp tục cập nhật.")
 except FileNotFoundError:
     # Nếu file đã cập nhật tồn tại, thì đọc vào để tránh ghi đè dữ liệu đã có
