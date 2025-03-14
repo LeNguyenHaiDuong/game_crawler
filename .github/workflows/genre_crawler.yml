@@ -1,15 +1,14 @@
-name: Genre Crawler
-
-on:
-  workflow_dispatch:  # Chạy thủ công khi bấm nút "Run workflow" trên GitHub
-
 jobs:
   scrape:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write  # Cấp quyền ghi vào repo
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}  # Sử dụng token để có quyền push
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -28,4 +27,4 @@ jobs:
           git config --global user.email "actions@github.com"
           git add vgsales_updated.csv
           git commit -m "Update scraped data" || echo "No changes to commit"
-          git push
+          git push origin main
