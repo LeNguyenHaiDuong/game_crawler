@@ -2,9 +2,7 @@ name: Genre Crawler
 
 on:
   workflow_dispatch:  # Chạy thủ công khi bấm "Run workflow" trên GitHub
-  schedule:
-    - cron: "*/10 * * * *"  # Chạy tự động mỗi 10 phút
-
+ 
 jobs:
   scrape:
     runs-on: ubuntu-latest
