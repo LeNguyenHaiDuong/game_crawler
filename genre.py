@@ -3,6 +3,7 @@ import requests
 from bs4 import BeautifulSoup
 import time
 import random
+import sys
 
 batch_id = int(sys.argv[1])  # Nhận batch_id từ GitHub Actions
 batch_size = 10000  # Mỗi workflow xử lý 10.000 dòng
