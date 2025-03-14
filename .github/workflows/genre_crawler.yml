@@ -33,13 +33,7 @@ jobs:
       - name: Run genre.py for Batch ${{ matrix.batch_id }}
         run: python -u genre.py ${{ matrix.batch_id }} || echo "Script failed, check logs."
 
-      - name: Upload CSV Progress
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: vgsales-progress-batch-${{ matrix.batch_id }}
-          path: vgsales_updated_${{ matrix.batch_id }}.csv
-
+      
       - name: Save progress to GitHub
         if: always()
         run: |
@@ -55,8 +49,11 @@ jobs:
           git commit -m "Batch ${{ matrix.batch_id }} progress" || echo "⚠️ No changes to commit."
           git push origin master || echo "⚠️ No changes to push."
 
-      - name: Cancel other running jobs
-        if: failure() || cancelled()  # 🔥 Nếu batch bị lỗi hoặc hủy, dừng tất cả batch khác
-        uses: styfle/cancel-workflow-action@0.12.0
+      - name: Upload CSV Progress
+        if: always()
+        uses: actions/upload-artifact@v4
         with:
-          access_token: ${{ secrets.GITHUB_TOKEN }}
+          name: vgsales-progress-batch-${{ matrix.batch_id }}
+          path: data/vgsales_updated_${{ matrix.batch_id }}.csv
+          if-no-files-found: warn
+          overwrite: true  # 🔥 Cho phép ghi đè nếu file đã tồn tại
