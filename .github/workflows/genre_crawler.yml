@@ -1,13 +1,17 @@
-name: Genre Crawler
+name: Genre Crawler Batch
 
 on:
-  workflow_dispatch:  # Chạy thủ công khi bấm "Run workflow" trên GitHub
- 
+  workflow_dispatch:  # Chạy thủ công khi bấm "Run workflow"
+
 jobs:
   scrape:
     runs-on: ubuntu-latest
     permissions:
       contents: write  # Cấp quyền ghi vào repo
+
+    strategy:
+      matrix:
+        batch_id: [0, 1, 2, 3, 4, 5, 6]  # Chạy 7 workflow song song
 
     steps:
       - name: Check Memory Usage
@@ -15,24 +19,30 @@ jobs:
 
       - name: Checkout code
         uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: "3.9"
-      
+
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Run genre.py with real-time logs
-        run: python -u genre.py || echo "Script failed, check logs."
+      - name: Run genre.py for Batch ${{ matrix.batch_id }}
+        run: python -u genre.py ${{ matrix.batch_id }} || echo "Script failed, check logs."
+
+      - name: Upload CSV Progress
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: vgsales-progress-batch-${{ matrix.batch_id }}
+          path: vgsales_updated_${{ matrix.batch_id }}.csv
 
       - name: Save progress to GitHub
+        if: always()
         run: |
           git config --global user.name "github-actions"
           git config --global user.email "actions@github.com"
-          git add vgsales_updated.csv
-          git commit -m "Auto-save progress" || echo "No changes to commit"
-          git push origin master
+          git add vgsales_updated_${{ matrix.batch_id }}.csv
+          git commit -m "Batch ${{ matrix.batch_id }} progress" || echo "No changes to commit"
+          git push origin master || echo "Git push failed, but data is saved in Artifacts"
