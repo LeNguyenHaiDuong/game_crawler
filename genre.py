@@ -73,6 +73,10 @@ if len(rows_to_update) == 0:
 else:
     print(f"Done filtering, update list from {rows_to_update[0]}")
 
+
+batch_size_update = 100
+count = 0
+
 for idx, url in rows_to_update:
     idx, new_Genre = process_row(idx, url)  # Gọi hàm lấy Genre
     while (len(new_Genre) > 20):
@@ -84,8 +88,12 @@ for idx, url in rows_to_update:
 
     print(f"Update indx {idx}")
     df.at[idx, "Genre"] = new_Genre  # Cập nhật giá trị mới
-        
+    count += 1
 
+    if count == batch_size_update:
+        count = 0
+        df.to_csv(output_file, index=False)
+        print(f"Saved until line {idx}")
 
 df.to_csv(output_file, index=False)
 print(f"✅ Saved {output_file}")
