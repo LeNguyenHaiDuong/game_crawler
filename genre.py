@@ -68,7 +68,10 @@ output_file = f"data/vgsales_updated_{batch_id}.csv"
 
 # Lọc các dòng cần cập nhật (chỉ cập nhật nếu vẫn là URL)
 rows_to_update = [(idx, row["Genre"]) for idx, row in df.iterrows() if len(row["Genre"]) > 20]
-print(f"Done filtering, update list from {rows_to_update[0]}")
+if len(rows_to_update) == 0:
+    print("This batch is already done.")
+else:
+    print(f"Done filtering, update list from {rows_to_update[0]}")
 
 for idx, url in rows_to_update:
     idx, new_Genre = process_row(idx, url)  # Gọi hàm lấy Genre
