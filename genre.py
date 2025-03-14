@@ -38,6 +38,8 @@ def get_Genre(url):
         for h2 in h2s:
             if h2.string == "Genre":
                 return h2.next_sibling.string.strip()
+
+        time.sleep(5)
     
     except:
         print("Cannot get:", url)
