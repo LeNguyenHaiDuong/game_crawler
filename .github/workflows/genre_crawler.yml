@@ -8,10 +8,11 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write  # Cấp quyền ghi vào repo
+    timeout-minutes: 330  # ⏳ Hủy job nếu chạy quá 5 giờ 30 phút
 
     strategy:
       matrix:
-        batch_id: [0, 1, 2, 3, 4, 5, 6]  # Chạy 7 workflow song song
+        batch_id: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22]
       fail-fast: false  # 🔥 Không hủy các batch khác nếu một batch bị lỗi
 
     steps:
@@ -32,7 +33,7 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Run genre.py for Batch ${{ matrix.batch_id }}
-        run: python -u genre.py ${{ matrix.batch_id }} || echo "Script failed, check logs."
+        run: python -u genre.py ${{ matrix.batch_id }} 3000 || echo "Script failed, check logs."
 
       
       - name: Save progress to GitHub
