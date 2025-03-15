@@ -12,6 +12,7 @@ jobs:
     strategy:
       matrix:
         batch_id: [0, 1, 2, 3, 4, 5, 6]  # Chạy 7 workflow song song
+      fail-fast: false  # 🔥 Không hủy các batch khác nếu một batch bị lỗi
 
     steps:
       - name: Check Memory Usage
