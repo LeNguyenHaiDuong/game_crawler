@@ -53,7 +53,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: vgsales-progress-batch-${{ matrix.batch_id }}
+          name: vgsales-progress-all
           path: data/vgsales_updated_${{ matrix.batch_id }}.csv
           if-no-files-found: warn
           overwrite: true  # 🔥 Cho phép ghi đè nếu file đã tồn tại
@@ -86,8 +86,8 @@ jobs:
           # 🛠️ Cập nhật repo với phiên bản mới nhất
           git pull --rebase origin master || echo "⚠️ Pull failed, continuing..."
 
-          # ✅ Add tất cả file cập nhật từ các batch
-          git add data/
+          # ✅ Chỉ add file .csv, bỏ qua thư mục khác
+          git add data/*.csv || echo "⚠️ No CSV files to add."
 
           # 🛑 Kiểm tra xem có thay đổi nào chưa commit không
           if git diff --cached --quiet; then
