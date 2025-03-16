@@ -78,8 +78,9 @@ jobs:
               echo "✅ Push successful!"
               exit 0
             else
-              echo "⚠️ Push failed, retrying in 10s..."
-              sleep 10
+              SLEEP_TIME=$(shuf -i 0-10 -n 1)  # Random số giây từ 0-10
+              echo "⚠️ Push failed, retrying in $SLEEP_TIME seconds..."
+              sleep $SLEEP_TIME
             fi
           done
 
