@@ -4,14 +4,18 @@ on:
   workflow_dispatch:  # Chạy thủ công khi bấm "Run workflow"
 
 jobs:
-  prepare:
+    prepare:
     runs-on: ubuntu-latest
     outputs:
       batch_ids: ${{ steps.set-batch.outputs.batch_ids }}
     steps:
       - name: Generate batch list
         id: set-batch
-        run: echo "batch_ids=$(seq 0 66 | jq -R -s 'split(\"\n\")[:-1]' | jq -c)" >> "$GITHUB_OUTPUT"
+        run: |
+          echo 'batch_ids<<EOF' >> $GITHUB_OUTPUT
+          seq 0 66 | jq -R -s 'split("\n")[:-1]' | jq -c >> $GITHUB_OUTPUT
+          echo 'EOF' >> $GITHUB_OUTPUT
+
         
   scrape:
     needs: prepare  # 🛑 Đảm bảo chạy sau khi `prepare` hoàn thành
