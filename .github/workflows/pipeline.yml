@@ -37,6 +37,11 @@ jobs:
       contents: write  # Cấp quyền ghi vào repo
     
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}  # Sử dụng token để có quyền push
+
       - name: Run VGChartz Full Scraper
         run: python -u source/vgchartzfull.py || echo "Script failed, check logs."
 
