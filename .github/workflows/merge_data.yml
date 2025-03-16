@@ -48,6 +48,8 @@ jobs:
           git pull --rebase origin master || echo "⚠️ Pull failed, continuing..."
           
           git add data/vgsales_final.csv
+          git rm -rf data/vgsales_updated_*.csv || echo "⚠️ No batch files to delete."
+          
           if git diff --cached --quiet; then
             echo "⚠️ No changes detected, skipping commit."
           else
@@ -55,5 +57,4 @@ jobs:
             git push origin master
           fi
 
-      - name: Clean Up Batch Files
-        run: rm -rf data/vgsales_updated_*.csv || echo "⚠️ No batch files to delete."
+  
