@@ -63,8 +63,7 @@ jobs:
           fi
 
           # Chỉ add file batch hiện tại
-          FILE_PATH="data/vgsales_updated_${{ matrix.batch_id }}.csv"
-          git add "$FILE_PATH"
+          git add .
           
           while true; do
             # Cập nhật repo với phiên bản mới nhất
