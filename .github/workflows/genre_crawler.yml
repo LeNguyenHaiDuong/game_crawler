@@ -4,7 +4,7 @@ on:
   workflow_dispatch:  # Chạy thủ công khi bấm "Run workflow"
 
 jobs:
-    prepare:
+  prepare:
     runs-on: ubuntu-latest
     outputs:
       batch_ids: ${{ steps.set-batch.outputs.batch_ids }}
