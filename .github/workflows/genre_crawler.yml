@@ -86,9 +86,9 @@ jobs:
           BATCH_DIR="vgsales-progress-batch-${{ matrix.batch_id }}"  # Gán batch_id vào biến
           
           if [ -d "$BATCH_DIR" ]; then
-            find "$BATCH_DIR" -type f -name "*.csv" -exec mv {} data/ \;
+              mv vgsales_updated_*.csv data/ 2>/dev/null || echo "⚠️ No CSV files to move."
           else
-            echo "⚠️ Warning: Directory $BATCH_DIR not found, skipping..."
+              echo "⚠️ Warning: Directory $BATCH_DIR not found, skipping..."
           fi
       
 
