@@ -48,12 +48,13 @@ jobs:
 
       - name: Run genre.py for Batch ${{ matrix.batch_id }}
         run: python -u source/genre.py ${{ matrix.batch_id }} 10 || echo "Script failed, check logs."
-
+      
+      
       - name: Upload CSV Progress
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: vgsales-progress-all
+          name: vgsales-progress-batch-${{ matrix.batch_id }}
           path: data/vgsales_updated_${{ matrix.batch_id }}.csv
           if-no-files-found: warn
           overwrite: true  # 🔥 Cho phép ghi đè nếu file đã tồn tại
@@ -78,6 +79,13 @@ jobs:
       - name: List downloaded files
         run: ls -lah data/
 
+
+      - name: Move CSV files to data/
+        run: |
+          mkdir -p data/  # Đảm bảo thư mục `data/` tồn tại
+          find vgsales-progress-batch-${{ matrix.batch_id }}/ -type f -name "*.csv" -exec mv {} data/ \;
+      
+
       - name: Commit & Push all Batch Updates
         run: |
           git config --global user.name "github-actions"
@@ -86,8 +94,8 @@ jobs:
           # 🛠️ Cập nhật repo với phiên bản mới nhất
           git pull --rebase origin master || echo "⚠️ Pull failed, continuing..."
 
-          # ✅ Chỉ add file .csv, bỏ qua thư mục khác
-          git add data/*.csv || echo "⚠️ No CSV files to add."
+          # ✅ Chỉ add file .csv trong `data/`, bỏ qua thư mục khác
+          find data/ -maxdepth 1 -type f -name "*.csv" -exec git add {} \;
 
           # 🛑 Kiểm tra xem có thay đổi nào chưa commit không
           if git diff --cached --quiet; then
