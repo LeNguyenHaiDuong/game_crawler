@@ -49,36 +49,55 @@ jobs:
       - name: Run genre.py for Batch ${{ matrix.batch_id }}
         run: python -u source/genre.py ${{ matrix.batch_id }} 10 || echo "Script failed, check logs."
 
-      
-      - name: Save progress to GitHub
+      - name: Upload CSV Progress
         if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: vgsales-progress-batch-${{ matrix.batch_id }}
+          path: data/vgsales_updated_${{ matrix.batch_id }}.csv
+          if-no-files-found: warn
+          overwrite: true  # 🔥 Cho phép ghi đè nếu file đã tồn tại
+
+  final-commit:
+    needs: scrape  # Chạy sau khi tất cả batch hoàn thành
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Download all Batch Results
+        uses: actions/download-artifact@v4
+        with:
+          path: data/
+
+      - name: List downloaded files
+        run: ls -lah data/
+
+      - name: Commit & Push all Batch Updates
         run: |
           git config --global user.name "github-actions"
           git config --global user.email "actions@github.com"
 
-          FILE_PATH="data/vgsales_updated_${{ matrix.batch_id }}.csv"
-
-          # 🛑 Kiểm tra file có tồn tại không trước khi add
-          if [ ! -f "$FILE_PATH" ]; then
-            echo "❌ Error: File $FILE_PATH not found. Exiting."
-            exit 1
-          fi
-
-          # 🛠️ Cập nhật repo với phiên bản mới nhất, tránh lỗi xung đột
+          # 🛠️ Cập nhật repo với phiên bản mới nhất
           git pull --rebase origin master || echo "⚠️ Pull failed, continuing..."
-          
-          # ✅ Chỉ add file batch hiện tại
-          git add "$FILE_PATH"
-          
-          # ✅ Kiểm tra xem có thay đổi nào chưa commit không
+
+          # ✅ Add tất cả file cập nhật từ các batch
+          git add data/
+
+          # 🛑 Kiểm tra xem có thay đổi nào chưa commit không
           if git diff --cached --quiet; then
-            echo "⚠️ No changes detected in $FILE_PATH, skipping commit."
+            echo "⚠️ No changes detected, skipping commit."
             exit 0
           fi
-          
-          # 🚀 Commit thay đổi nếu có
-          git commit -m "Batch ${{ matrix.batch_id }} progress"
-          
+
+          # 🚀 Commit tất cả thay đổi cùng một lúc
+          git commit -m "🔥 Updated all batch progress"
+
           # 🔄 Thử push, nếu thất bại thì thử lại nhiều lần với delay random
           while true; do
             if git push origin master; then
@@ -91,13 +110,3 @@ jobs:
               git pull --rebase origin master || echo "⚠️ Pull failed, continuing..."
             fi
           done
-
-
-      - name: Upload CSV Progress
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: vgsales-progress-batch-${{ matrix.batch_id }}
-          path: data/vgsales_updated_${{ matrix.batch_id }}.csv
-          if-no-files-found: warn
-          overwrite: true  # 🔥 Cho phép ghi đè nếu file đã tồn tại
