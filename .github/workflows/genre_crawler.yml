@@ -74,23 +74,16 @@ jobs:
       - name: Download all Batch Results
         uses: actions/download-artifact@v4
         with:
-          path: data/
+          path: batch-results/
 
       - name: List downloaded files
-        run: ls -lah data/
+        run: ls -lah batch-results/
 
-
-      - name: Move CSV files to data/
+      - name: Move all CSV files to data/
         run: |
           mkdir -p data/  # Đảm bảo thư mục `data/` tồn tại
-          BATCH_DIR="vgsales-progress-batch-${{ matrix.batch_id }}"  # Gán batch_id vào biến
-          
-          if [ -d "$BATCH_DIR" ]; then
-              mv vgsales_updated_*.csv data/ 2>/dev/null || echo "⚠️ No CSV files to move."
-          else
-              echo "⚠️ Warning: Directory $BATCH_DIR not found, skipping..."
-          fi
-      
+          find batch-results/ -type f -name "vgsales_updated_*.csv" -exec mv {} data/ \;
+          ls -lah data/  # Kiểm tra sau khi di chuyển
 
       - name: Commit & Push all Batch Updates
         run: |
@@ -101,7 +94,7 @@ jobs:
           git pull --rebase origin master || echo "⚠️ Pull failed, continuing..."
 
           # ✅ Chỉ add file .csv trong `data/`, bỏ qua thư mục khác
-          find data/ -maxdepth 1 -type f -name "*.csv" -exec git add {} \;
+          git add data/*.csv || echo "⚠️ No CSV files to add."
 
           # 🛑 Kiểm tra xem có thay đổi nào chưa commit không
           if git diff --cached --quiet; then
@@ -109,8 +102,8 @@ jobs:
             exit 0
           fi
 
-          # 🚀 Commit tất cả thay đổi cùng một lúc
-          git commit -m "🔥 Updated all batch progress"
+          # 🚀 Commit tất cả file CSV cùng một lúc
+          git commit -m "🔥 Updated all batch CSV files"
 
           # 🔄 Thử push, nếu thất bại thì thử lại nhiều lần với delay random
           while true; do
