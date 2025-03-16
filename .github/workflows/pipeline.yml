@@ -49,6 +49,15 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}  # Sử dụng token để có quyền push
 
+      # ✅ Dùng lại cache Python từ `prepare`
+      - name: Restore Python environment
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: python-${{ runner.os }}-${{ hashFiles('requirements.txt') }}
+          restore-keys: |
+            python-${{ runner.os }}-
+            
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
