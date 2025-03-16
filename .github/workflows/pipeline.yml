@@ -8,8 +8,11 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    outputs:
+      batch_ids: ${{ steps.set-batch.outputs.batch_ids }}  # 🔥 Xuất batch_ids để truyền sang scrape
 
     steps:
+    
       - name: Checkout code
         uses: actions/checkout@v4
         
