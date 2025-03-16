@@ -226,9 +226,11 @@ jobs:
       contents: write
 
     steps:
-      - name: List downloaded files
-        run: ls -lah data/
-
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
       # ✅ Dùng lại cache Python từ `prepare`
       - name: Restore Python environment
         uses: actions/cache@v4
@@ -245,6 +247,10 @@ jobs:
 
       - name: Install dependencies (if not cached)
         run: pip install -r requirements.txt
+
+      - name: List downloaded files
+        run: ls -lah data/
+        
       - name: Run merge_data.py
         run: python source/merge_data.py || echo "Merge script failed, check logs."
 
