@@ -9,12 +9,27 @@ jobs:
     outputs:
       batch_ids: ${{ steps.set-batch.outputs.batch_ids }}
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
       - name: Generate batch list
         id: set-batch
         run: |
           echo 'batch_ids<<EOF' >> $GITHUB_OUTPUT
           seq 0 66 | jq -R -s 'split("\n")[:-1]' | jq -c >> $GITHUB_OUTPUT
           echo 'EOF' >> $GITHUB_OUTPUT
+
+      - name: Cache Python dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip  # Vị trí lưu cache
+          key: dependencies-${{ runner.os }}-python-${{ hashFiles('requirements.txt') }}
+          restore-keys: |
+            dependencies-${{ runner.os }}-python-
+
+      - name: Install dependencies (if not cached)
+        run: pip install -r requirements.txt
+
 
         
   scrape:
@@ -43,17 +58,7 @@ jobs:
         with:
           python-version: "3.9"
 
-      - name: Cache Python dependencies
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/pip  # Vị trí lưu cache
-          key: dependencies-${{ runner.os }}-python-${{ hashFiles('requirements.txt') }}
-          restore-keys: |
-            dependencies-${{ runner.os }}-python-
-
-      - name: Install dependencies (if not cached)
-        run: pip install -r requirements.txt
-
+      
       - name: Run genre.py for Batch ${{ matrix.batch_id }}
         run: python -u source/genre.py ${{ matrix.batch_id }} 10 || echo "Script failed, check logs."
       
