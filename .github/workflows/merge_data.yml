@@ -38,7 +38,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: merged-vgsales-data
-          path: data/vgsales.csv
+          path: data/vgsales_final.csv
           if-no-files-found: error
 
       - name: Commit & Push Merged Data
@@ -47,10 +47,13 @@ jobs:
           git config --global user.email "actions@github.com"
           git pull --rebase origin master || echo "⚠️ Pull failed, continuing..."
           
-          git add data/vgsales.csv
+          git add data/vgsales_final.csv
           if git diff --cached --quiet; then
             echo "⚠️ No changes detected, skipping commit."
           else
             git commit -m "Updated merged vgsales data"
             git push origin master
           fi
+
+      - name: Clean Up Batch Files
+        run: rm -rf data/vgsales_updated_*.csv || echo "⚠️ No batch files to delete."
