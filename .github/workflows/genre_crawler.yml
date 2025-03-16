@@ -81,7 +81,7 @@ jobs:
           
           # 🔄 Thử push, nếu thất bại thì thử lại nhiều lần với delay random
           while true; do
-            if git push origin HEAD:master; then
+            if git push origin master; then
               echo "✅ Push successful!"
               exit 0
             else
