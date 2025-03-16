@@ -29,6 +29,10 @@ jobs:
           restore-keys: |
             python-${{ runner.os }}-
 
+      - name: Install dependencies (if not cached)
+        run: pip install -r requirements.txt
+
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
@@ -62,6 +66,10 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: "3.9"
+
+      - name: Install dependencies (if not cached)
+        run: pip install -r requirements.txt
+
           
       - name: Run VGChartz Full Scraper
         run: python -u source/vgchartzfull.py || echo "Script failed, check logs."
