@@ -1,11 +1,11 @@
-Rank,Name,Platform,Publisher,Developer,VGChartz Score,Critic Score,User Score,Total Shipped,Sales NA,Sales PAL,Sales JP,Sales Other,Sales Global,Release Date,Last Update,Genre
-501,Days Gone,All,Sony Interactive Entertainment,SIE Bend Studio,,,,8.94m,,,,,,26th Apr 19,06th Jan 22,Action-Adventure
-502,The Legend of Zelda: Twilight Princess,All,Nintendo,Nintendo EAD,,,,8.93m,,,,,,11th Dec 06,09th Feb 23,Action-Adventure
-503,Need for Speed: Undercover,All,Electronic Arts,EA Black Box,,,,8.90m,,,,,,18th Nov 08,20th Oct 20,Racing
-504,The Elder Scrolls V: Skyrim,X360,Bethesda Softworks,Bethesda Game Studios,,9.3,,,5.10m,2.83m,0.10m,0.85m,8.88m,11th Nov 11,01st Apr 18,Role-Playing
-505,Mario Party 8,Wii,Nintendo,Hudson Soft,,6.5,,8.85m,,,,,,29th May 07,,Misc
-506,Super Mario Kart,SNES,Nintendo,Nintendo EAD,,10.0,,8.76m,,,,,,01st Sep 92,,Racing
-507,Grand Theft Auto V,XOne,Rockstar Games,Rockstar North,,9.0,9.0,,4.70m,3.25m,0.01m,0.76m,8.72m,18th Nov 14,11th Apr 18,Action
-508,Onimusha,Series,Capcom,Capcom,,,,8.70m,,,,,,13th Mar 01,04th Feb 20,Action-Adventure
-509,Final Fantasy VIII,PS,Square EA,SquareSoft,,9.4,,8.60m,,,,,,07th Sep 99,,Role-Playing
-510,Final Fantasy X,PS2,Square,SquareSoft,,9.0,10.0,8.60m,,,,,,17th Dec 01,,Role-Playing
+Rank,Genre
+501,Action-Adventure
+502,Action-Adventure
+503,Racing
+504,Role-Playing
+505,Misc
+506,Racing
+507,Action
+508,Action-Adventure
+509,Role-Playing
+510,Role-Playing
