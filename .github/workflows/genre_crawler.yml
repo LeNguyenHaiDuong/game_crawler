@@ -42,7 +42,7 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Run genre.py for Batch ${{ matrix.batch_id }}
-        run: python -u genre.py ${{ matrix.batch_id }} 3000 || echo "Script failed, check logs."
+        run: python -u genre.py ${{ matrix.batch_id }} 1000 || echo "Script failed, check logs."
 
       
       - name: Save progress to GitHub
