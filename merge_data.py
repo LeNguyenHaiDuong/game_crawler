@@ -17,16 +17,35 @@ if not os.path.exists(OUTPUT_FILE):
 merged_df = pd.read_csv(OUTPUT_FILE, low_memory=False)
 print(f"✅ Đã tải {OUTPUT_FILE} với {len(merged_df)} dòng.")
 
-# Duyệt qua từng file batch để cập nhật Genre vào merged_df
+# Danh sách chứa dữ liệu từ tất cả batch
+batch_data = []
+
+# 🔹 Bước 1: Đọc tất cả file batch và gộp thành một DataFrame
 for file in sorted(csv_files, key=lambda x: int(x.split("_")[-1].split(".")[0])):  # Sắp xếp theo batch_id
     file_path = os.path.join(DATA_DIR, file)
-    print(f"🔄 Đang cập nhật từ: {file_path}")
-
-    batch_df = pd.read_csv(file_path, usecols=["Rank", "Genre"], low_memory=False)
-
-    # Ghi đè cột Genre vào merged_df theo Rank
-    merged_df.update(batch_df.set_index("Rank"), overwrite=True)
+    print(f"🔄 Đang đọc file: {file_path}")
     
-# Lưu lại file sau khi cập nhật
-merged_df.to_csv(OUTPUT_FILE, index=False)
-print(f"✅ Đã cập nhật xong! File lưu tại: {OUTPUT_FILE}")
+    batch_df = pd.read_csv(file_path, usecols=["Rank", "Genre"], low_memory=False)
+    batch_data.append(batch_df)
+
+# Nếu có batch để cập nhật, thực hiện merge
+if batch_data:
+    batch_df = pd.concat(batch_data, ignore_index=True)
+
+    # 🔹 Bước 2: Loại bỏ dòng trùng lặp theo Rank (giữ giá trị cuối cùng)
+    batch_df.drop_duplicates(subset=["Rank"], keep="last", inplace=True)
+
+    # 🔹 Bước 3: Ghi giá trị Genre mới vào `merged_df` theo Rank
+    merged_df = merged_df.merge(batch_df, on="Rank", how="left", suffixes=("", "_new"))
+    
+    # Chỉ cập nhật những dòng có giá trị mới
+    merged_df["Genre"] = merged_df["Genre_new"].combine_first(merged_df["Genre"])
+
+    # Xóa cột tạm
+    merged_df.drop(columns=["Genre_new"], inplace=True)
+
+    # Lưu lại file sau khi cập nhật
+    merged_df.to_csv(OUTPUT_FILE, index=False)
+    print(f"✅ Đã cập nhật xong! File lưu tại: {OUTPUT_FILE}")
+else:
+    print("⚠️ Không có file batch nào để cập nhật!")
