@@ -3,7 +3,7 @@ import pandas as pd
 
 # Thư mục chứa các file batch
 DATA_DIR = "data"
-OUTPUT_FILE = "data/vgsales_merged.csv"
+OUTPUT_FILE = "data/vgsales.csv"
 
 # Tìm tất cả file batch có dạng vgsales_updated_X.csv
 csv_files = [f for f in os.listdir(DATA_DIR) if f.startswith("vgsales_updated_") and f.endswith(".csv")]
