@@ -57,13 +57,32 @@ jobs:
           git config --global user.email "actions@github.com"
           
           FILE_PATH="data/vgsales_updated_${{ matrix.batch_id }}.csv"
-          
-          # Lấy thay đổi mới nhất từ remote trước khi push
-          git pull --rebase origin master || echo "⚠️ Pull failed, continuing..."
-          
-          git add .
-          git commit -m "Batch ${{ matrix.batch_id }} progress" || echo "⚠️ No changes to commit."
-          git push origin HEAD:master || (echo "⚠️ Push failed, retrying..." && sleep 10 && git pull --rebase origin master && git push origin master)
+
+          while true; do
+            # Cập nhật repo với phiên bản mới nhất
+            git pull --rebase origin master || echo "⚠️ Pull failed, continuing..."
+
+            # Chỉ add file batch hiện tại
+            git add "$FILE_PATH"
+
+            # Kiểm tra xem file có thay đổi gì không
+            if git diff --cached --quiet; then
+              echo "⚠️ No changes detected, skipping commit."
+              exit 0  # Không có thay đổi thì kết thúc luôn
+            fi
+            
+            git commit -m "Batch ${{ matrix.batch_id }} progress"
+
+            # Thử push, nếu thành công thì thoát vòng lặp
+            if git push origin HEAD:master; then
+              echo "✅ Push successful!"
+              exit 0
+            else
+              echo "⚠️ Push failed, retrying in 10s..."
+              sleep 10
+            fi
+          done
+
 
       - name: Upload CSV Progress
         if: always()
