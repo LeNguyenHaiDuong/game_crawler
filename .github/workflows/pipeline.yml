@@ -154,6 +154,15 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
+      # ✅ Khôi phục lại cache Python từ `scrape`
+      - name: Restore Python environment
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: python-${{ runner.os }}-${{ hashFiles('requirements.txt') }}
+          restore-keys: |
+            python-${{ runner.os }}-
+
       - name: Download all Batch Results
         uses: actions/download-artifact@v4
         with:
