@@ -83,7 +83,13 @@ jobs:
       - name: Move CSV files to data/
         run: |
           mkdir -p data/  # Đảm bảo thư mục `data/` tồn tại
-          find vgsales-progress-batch-${{ matrix.batch_id }}/ -type f -name "*.csv" -exec mv {} data/ \;
+          BATCH_DIR="vgsales-progress-batch-${{ matrix.batch_id }}"  # Gán batch_id vào biến
+          
+          if [ -d "$BATCH_DIR" ]; then
+            find "$BATCH_DIR" -type f -name "*.csv" -exec mv {} data/ \;
+          else
+            echo "⚠️ Warning: Directory $BATCH_DIR not found, skipping..."
+          fi
       
 
       - name: Commit & Push all Batch Updates
