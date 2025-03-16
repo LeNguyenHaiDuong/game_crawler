@@ -4,6 +4,15 @@ on:
   workflow_dispatch:  # Chạy thủ công khi bấm "Run workflow"
 
 jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      batch_ids: ${{ steps.set-batch.outputs.batch_ids }}
+    steps:
+      - name: Generate batch list
+        id: set-batch
+        run: echo "batch_ids=$(seq 0 66 | jq -R -s 'split(\"\n\")[:-1]')" >> $GITHUB_ENV
+  
   scrape:
     runs-on: ubuntu-latest
     permissions:
@@ -12,7 +21,7 @@ jobs:
 
     strategy:
       matrix:
-        batch_id: ${{ fromJson('[' + join(',', range(0, 67)) + ']') }}
+        batch_id: ${{ fromJson(needs.prepare.outputs.batch_ids) }}
       fail-fast: false  # 🔥 Không hủy các batch khác nếu một batch bị lỗi
 
     steps:
