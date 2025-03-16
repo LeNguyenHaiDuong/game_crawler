@@ -9,6 +9,13 @@ import threading
 
 import queue
 
+# Định nghĩa đường dẫn chính xác
+DATA_DIR = os.path.join(os.path.dirname(__file__), "../data")
+OUTPUT_FILE = os.path.join(DATA_DIR, "vgsales.csv")
+
+# 🔥 Đảm bảo thư mục `data/` tồn tại trước khi lưu file
+os.makedirs(DATA_DIR, exist_ok=True)
+
 # Hàng đợi để chứa dữ liệu cần ghi
 write_queue = queue.Queue()
 
@@ -27,7 +34,7 @@ list_attr = [0, 2, 4, 5]
 list_attr.extend(range(6, 17))
 
 
-with open("../data/vgsales.csv", mode="w", newline="", encoding="utf-8") as file:
+with open(OUTPUT_FILE, mode="w", newline="", encoding="utf-8") as file:
     writer = csv.writer(file, delimiter=",")
     writer.writerow([
         "Rank", "Name", "Platform", "Publisher", "Developer", "VGChartz Score",
@@ -64,7 +71,7 @@ def extract_value(data, idx):
     
 def write_worker():
     """Luồng ghi file liên tục lấy dữ liệu từ hàng đợi"""
-    with open("../data/vgsales.csv", mode="a", newline="", encoding="utf-8") as file:
+    with open(OUTPUT_FILE, mode="a", newline="", encoding="utf-8") as file:
         writer = csv.writer(file, delimiter=",")
         
         while True:
