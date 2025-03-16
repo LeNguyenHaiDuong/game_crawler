@@ -94,7 +94,7 @@ jobs:
           fi
 
   scrape:
-    needs: crawl-list  # 🛑 Đảm bảo chạy sau khi `prepare` hoàn thành
+    needs: [prepare, crawl-list]  # 🛑 Đảm bảo chạy sau khi `prepare` hoàn thành
     runs-on: ubuntu-latest
     permissions:
       contents: write  # Cấp quyền ghi vào repo
