@@ -16,9 +16,8 @@ jobs:
       - name: Generate batch list
         id: set-batch
         run: |
-            echo 'batch_ids<<EOF' >> $GITHUB_OUTPUT
-            seq 0 66 | jq -R -s 'split("\n")[:-1]' | jq -c >> $GITHUB_OUTPUT
-            echo 'EOF' >> $GITHUB_OUTPUT
+          BATCH_IDS=$(seq 0 66 | jq -R -s 'split("\n")[:-1]' | jq -c)
+          echo "batch_ids=$BATCH_IDS" >> $GITHUB_OUTPUT
 
       - name: Cache Python dependencies
         uses: actions/cache@v4
@@ -31,6 +30,13 @@ jobs:
       - name: Install dependencies (if not cached)
         run: pip install -r requirements.txt
 
+  crawl-list:
+    needs: prepare  # 🛑 Đảm bảo chạy sau khi `prepare` hoàn thành
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write  # Cấp quyền ghi vào repo
+    
+    steps:
       - name: Run VGChartz Full Scraper
         run: python -u source/vgchartzfull.py || echo "Script failed, check logs."
 
@@ -48,7 +54,7 @@ jobs:
           fi
 
   scrape:
-    needs: prepare  # 🛑 Đảm bảo chạy sau khi `prepare` hoàn thành
+    needs: crawl-list  # 🛑 Đảm bảo chạy sau khi `prepare` hoàn thành
     runs-on: ubuntu-latest
     permissions:
       contents: write  # Cấp quyền ghi vào repo
