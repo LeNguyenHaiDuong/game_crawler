@@ -16,6 +16,8 @@ OUTPUT_FILE = os.path.join(DATA_DIR, "vgsales.csv")
 # 🔥 Đảm bảo thư mục `data/` tồn tại trước khi lưu file
 os.makedirs(DATA_DIR, exist_ok=True)
 
+print(f"✅ File đã lưu tại: {OUTPUT_FILE}")
+
 # Hàng đợi để chứa dữ liệu cần ghi
 write_queue = queue.Queue()
 
