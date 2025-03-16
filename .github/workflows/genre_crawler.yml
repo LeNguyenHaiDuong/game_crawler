@@ -72,6 +72,7 @@ jobs:
           
           # Chỉ add file batch hiện tại
           git add "$FILE_PATH"
+          git commit -m "Batch ${{ matrix.batch_id }} progress"
 
           # Kiểm tra xem file có thay đổi gì không
           if git diff --cached --quiet; then
