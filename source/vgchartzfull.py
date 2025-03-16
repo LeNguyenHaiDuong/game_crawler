@@ -9,8 +9,9 @@ import threading
 
 import queue
 
-# Định nghĩa đường dẫn chính xác
-DATA_DIR = os.path.join(os.path.dirname(__file__), "../data")
+# Định nghĩa thư mục lưu file (game_crawler/data/)
+BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))  # Trỏ đến thư mục game_crawler/
+DATA_DIR = os.path.join(BASE_DIR, "data")  
 OUTPUT_FILE = os.path.join(DATA_DIR, "vgsales.csv")
 
 # 🔥 Đảm bảo thư mục `data/` tồn tại trước khi lưu file
