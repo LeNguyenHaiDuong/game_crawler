@@ -11,9 +11,10 @@ jobs:
     steps:
       - name: Generate batch list
         id: set-batch
-        run: echo "batch_ids=$(seq 0 66 | jq -R -s 'split(\"\n\")[:-1]')" >> $GITHUB_ENV
-  
+        run: echo "batch_ids=$(seq 0 66 | jq -R -s 'split(\"\n\")[:-1]' | jq -c)" >> "$GITHUB_OUTPUT"
+        
   scrape:
+    needs: prepare  # 🛑 Đảm bảo chạy sau khi `prepare` hoàn thành
     runs-on: ubuntu-latest
     permissions:
       contents: write  # Cấp quyền ghi vào repo
