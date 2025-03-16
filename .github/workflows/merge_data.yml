@@ -34,12 +34,6 @@ jobs:
       - name: Run merge_data.py
         run: python source/merge_data.py || echo "Merge script failed, check logs."
 
-      - name: Upload Merged File as Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: merged-vgsales-data
-          path: data/vgsales_final.csv
-          if-no-files-found: error
 
       - name: Commit & Push Merged Data
         run: |

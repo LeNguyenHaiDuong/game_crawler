@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup
 import time
 import random
 import sys
+import os
 
 batch_id = int(sys.argv[1])  # Nhận batch_id từ GitHub Actions
 batch_size = int(sys.argv[2])  # Mỗi workflow xử lý 10.000 dòng
@@ -13,7 +14,10 @@ start_idx = batch_id * batch_size
 end_idx = start_idx + batch_size
 
 # Đọc và ghi từ file này
-output_file = f"./data/vgsales_updated_{batch_id}.csv"
+# Định nghĩa thư mục lưu file (game_crawler/data/)
+BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))  # Trỏ đến thư mục game_crawler/
+DATA_DIR = os.path.join(BASE_DIR, "data")  
+output_file = os.path.join(DATA_DIR, f"vgsales_updated_{batch_id}.csv")
 
 USER_AGENTS = [
     # 🌐 Chrome (Windows)
