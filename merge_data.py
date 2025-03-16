@@ -3,19 +3,21 @@ import pandas as pd
 
 # Thư mục chứa các file batch
 DATA_DIR = "data"
-OUTPUT_FILE = "data/vgsales.csv"
+INPUT_FILE = "data/vgsales.csv"
+OUTPUT_FILE = "data/vgsales_final.csv"
+
 
 # Tìm tất cả file batch có dạng vgsales_updated_X.csv
 csv_files = [f for f in os.listdir(DATA_DIR) if f.startswith("vgsales_updated_") and f.endswith(".csv")]
 
 # Kiểm tra nếu file output đã tồn tại
-if not os.path.exists(OUTPUT_FILE):
-    print(f"❌ Không tìm thấy {OUTPUT_FILE}. Hãy đảm bảo file này đã được tạo trước!")
+if not os.path.exists(INPUT_FILE):
+    print(f"❌ Không tìm thấy {INPUT_FILE}. Hãy đảm bảo file này đã được tạo trước!")
     exit(1)
 
 # Đọc file gốc chứa toàn bộ dữ liệu
-merged_df = pd.read_csv(OUTPUT_FILE, low_memory=False)
-print(f"✅ Đã tải {OUTPUT_FILE} với {len(merged_df)} dòng.")
+merged_df = pd.read_csv(INPUT_FILE, low_memory=False)
+print(f"✅ Đã tải {INPUT_FILE} với {len(merged_df)} dòng.")
 
 # Danh sách chứa dữ liệu từ tất cả batch
 batch_data = []
