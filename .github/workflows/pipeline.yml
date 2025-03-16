@@ -143,7 +143,7 @@ jobs:
           overwrite: true  # 🔥 Cho phép ghi đè nếu file đã tồn tại
 
   extract-csv:
-    needs: scrape  # Chạy sau khi tất cả batch hoàn thành
+    needs: [prepare, scrape]  # Chạy sau khi tất cả batch hoàn thành
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -211,7 +211,7 @@ jobs:
           done
 
   final-commit:
-    needs: extract-csv  # Chạy sau khi tất cả batch hoàn thành
+    needs: [prepare, extract-csv]  # Chạy sau khi tất cả batch hoàn thành
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -219,6 +219,15 @@ jobs:
     steps:
       - name: List downloaded files
         run: ls -lah data/
+
+      # ✅ Khôi phục lại cache Python từ `scrape`
+      - name: Restore Python environment
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: python-${{ runner.os }}-${{ hashFiles('requirements.txt') }}
+          restore-keys: |
+            python-${{ runner.os }}-
 
       - name: Run merge_data.py
         run: python source/merge_data.py || echo "Merge script failed, check logs."
