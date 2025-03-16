@@ -65,10 +65,31 @@ jobs:
             exit 0  # Không có thay đổi thì kết thúc luôn
           fi
           
+          FILE_PATH="data/vgsales_updated_${{ matrix.batch_id }}.csv"
+
+
+          # Chỉ add file batch hiện tại
+          git add "$FILE_PATH"
+
+          # Kiểm tra xem file có thay đổi gì không
+          if git diff --cached --quiet; then
+            echo "⚠️ No changes detected, skipping commit."
+            exit 0  # Không có thay đổi thì kết thúc luôn
+          fi
+            
           while true; do
             # Cập nhật repo với phiên bản mới nhất
             git pull --rebase origin master || echo "⚠️ Pull failed, continuing..."
 
+            # # Chỉ add file batch hiện tại
+            # git add "$FILE_PATH"
+
+            # # Kiểm tra xem file có thay đổi gì không
+            # if git diff --cached --quiet; then
+            #   echo "⚠️ No changes detected, skipping commit."
+            #   exit 0  # Không có thay đổi thì kết thúc luôn
+            # fi
+            
             git commit -m "Batch ${{ matrix.batch_id }} progress"
 
             # Thử push, nếu thành công thì thoát vòng lặp
