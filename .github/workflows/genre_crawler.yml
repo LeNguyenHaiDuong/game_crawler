@@ -13,7 +13,7 @@ jobs:
         id: set-batch
         run: |
           echo 'batch_ids<<EOF' >> $GITHUB_OUTPUT
-          seq 0 67 | jq -R -s 'split("\n")[:-1]' | jq -c >> $GITHUB_OUTPUT
+          seq 0 66 | jq -R -s 'split("\n")[:-1]' | jq -c >> $GITHUB_OUTPUT
           echo 'EOF' >> $GITHUB_OUTPUT
 
         
