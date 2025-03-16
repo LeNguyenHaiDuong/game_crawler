@@ -1,11 +1,11 @@
-Rank,Name,Platform,Publisher,Developer,VGChartz Score,Critic Score,User Score,Total Shipped,Sales NA,Sales PAL,Sales JP,Sales Other,Sales Global,Release Date,Last Update,Genre
-351,Bomberman,Series,Konami,Hudson Soft,,,,12.00m,,,,,,01st Jan 87,19th Feb 21,Puzzle
-352,Cities: Skylines,All,Paradox Interactive,Colossal Order,,,,12.00m,,,,,,10th Mar 15,27th Jan 21,Simulation
-353,Cooking Mama,Series,Majesco Entertainment,Cooking Mama Limited,,,,12.00m,,,,,,12th Sep 06,22nd Feb 20,Simulation
-354,Diablo IIIRead the review,PC,Blizzard Entertainment,Blizzard Entertainment,8.4,9.0,,12.00m,,,,,,15th May 12,03rd Jan 18,Role-Playing
-355,Dragon Age: Inquisition,All,Electronic Arts,BioWare,,,,12.00m,,,,,,18th Nov 14,31st Dec 20,Role-Playing
-356,Half-Life 2,PC,VU Games,Valve Software,,9.7,,12.00m,,,,,,16th Nov 04,,Shooter
-357,Helldivers 2,All,Sony Interactive Entertainment,Arrowhead Game Studios,,,,12.00m,,,,,,08th Feb 24,11th Feb 24,Shooter
-358,Jak and Daxter,Series,Sony Interactive Entertainment,Naughty Dog,,,,12.00m,,,,,,03rd Dec 01,02nd Mar 20,Action-Adventure
-359,Left 4 Dead,Series,Valve,Valve,,,,12.00m,,,,,,17th Nov 08,19th Feb 20,Shooter
-360,Little Nightmares,Series,Bandai Namco Entertainment,Tarsier Studios,,,,12.00m,,,,,,28th Apr 17,15th Mar 20,Platform
+Rank,Genre
+351,Puzzle
+352,Simulation
+353,Simulation
+354,Role-Playing
+355,Role-Playing
+356,Shooter
+357,Shooter
+358,Action-Adventure
+359,Shooter
+360,Platform

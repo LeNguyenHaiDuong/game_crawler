@@ -1,11 +1,11 @@
-Rank,Name,Platform,Publisher,Developer,VGChartz Score,Critic Score,User Score,Total Shipped,Sales NA,Sales PAL,Sales JP,Sales Other,Sales Global,Release Date,Last Update,Genre
-601,Ark: Survival Evolved,All,Studio Wildcard,Studio Wildcard,,,,7.00m,,,,,,29th Aug 17,31st Dec 20,Action-Adventure
-602,Assassin's Creed: Revelations,All,Ubisoft,Ubisoft Montreal,,,,7.00m,,,,,,15th Nov 11,21st Oct 20,Action-Adventure
-603,DiRT,Series,Codemasters,Codemasters,,,,7.00m,,,,,,19th Jun 07,26th Jan 21,Racing
-604,Dragon Quest XI,All,Square Enix,Square Enix,,,,7.00m,,,,,,04th Sep 18,23rd Oct 20,Role-Playing
-605,Final Fantasy VII Remake,All,Square Enix,Square Enix,,8.9,,7.00m,,,,,,10th Apr 20,15th Sep 23,Role-Playing
-606,Grim Dawn,All,Crate Entertainment,Crate Entertainment,,,,7.00m,,,,,,25th Feb 16,28th Feb 22,Role-Playing
-607,Guild Wars 2Read the review,PC,NCSoft,ArenaNet,9.5,,,7.00m,,,,,,28th Aug 12,,Role-Playing
-608,Just Dance 3,All,Ubisoft,Ubisoft,,6.6,,7.00m,,,,,,07th Oct 11,24th Oct 20,Music
-609,King's Quest,Series,Sierra Online,On-Line Systems,,,,7.00m,,,,,,10th May 84,02nd Apr 21,Adventure
-610,Mafia III,All,2K Games,Hangar 13,,,,7.00m,,,,,,07th Oct 16,06th Nov 20,Action-Adventure
+Rank,Genre
+601,Action-Adventure
+602,Action-Adventure
+603,Racing
+604,Role-Playing
+605,Role-Playing
+606,Role-Playing
+607,Role-Playing
+608,Music
+609,Adventure
+610,Action-Adventure

@@ -1,11 +1,11 @@
-Rank,Name,Platform,Publisher,Developer,VGChartz Score,Critic Score,User Score,Total Shipped,Sales NA,Sales PAL,Sales JP,Sales Other,Sales Global,Release Date,Last Update,Genre
-281,Resident Evil 2 (2019),All,Capcom,Capcom,,,,15.00m,,,,,,25th Jan 19,11th Oct 20,Action-Adventure
-282,Sonic the Hedgehog,GEN,Sega,Sonic Team,,,,15.00m,,,,,,23rd Jun 91,,Platform
-283,Theme Park,All,Bullfrog Productions,Bullfrog Productions,,,,15.00m,,,,,,01st Jun 94,26th Sep 22,Simulation
-284,Monster Hunter World: Iceborne,All,Capcom,Capcom,,,,14.90m,,,,,,06th Sep 19,13th Oct 20,Role-Playing
-285,Gran Turismo 3: A-Spec,PS2,Sony Computer Entertainment,Polyphony Digital,,9.3,,14.89m,,,,,,09th Jul 01,,Racing
-286,Brain Age 2: More Training in Minutes a Day,DS,Nintendo,Nintendo SDD,,8.0,,14.88m,,,,,,20th Aug 07,,Misc
-287,Pokémon Legends: ArceusRead the review,NS,Nintendo,Game Freak,8.0,,,14.83m,,,,,,28th Jan 22,26th Feb 21,Role-Playing
-288,Call of Duty: Modern Warfare 3,X360,Activision,Infinity Ward,,8.7,,,9.07m,4.29m,0.13m,1.33m,14.82m,08th Nov 11,,Shooter
-289,Call of Duty: Black Ops,X360,Activision,Treyarch,,8.8,,,9.76m,3.73m,0.11m,1.14m,14.74m,09th Nov 10,,Shooter
-290,Pokémon Yellow: Special Pikachu Edition,GB,Nintendo,Game Freak,,8.7,,14.64m,,,,,,19th Oct 99,,Role-Playing
+Rank,Genre
+281,Action-Adventure
+282,Platform
+283,Simulation
+284,Role-Playing
+285,Racing
+286,Misc
+287,Role-Playing
+288,Shooter
+289,Shooter
+290,Role-Playing
