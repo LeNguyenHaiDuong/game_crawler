@@ -20,18 +20,23 @@ jobs:
           echo "batch_ids=$BATCH_IDS" >> $GITHUB_OUTPUT
         shell: bash
 
-
-      - name: Cache Python dependencies
+      # 🏆 Cache toàn bộ môi trường Python để dùng lại ở các job sau
+      - name: Cache Python environment
         uses: actions/cache@v4
         with:
-            path: ~/.cache/pip  # Vị trí lưu cache
-            key: dependencies-${{ runner.os }}-python-${{ hashFiles('requirements.txt') }}
-            restore-keys: |
-                dependencies-${{ runner.os }}-python-
+          path: ~/.cache/pip  # Lưu cache thư viện pip
+          key: python-${{ runner.os }}-${{ hashFiles('requirements.txt') }}
+          restore-keys: |
+            python-${{ runner.os }}-
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.9"
 
       - name: Install dependencies (if not cached)
         run: pip install -r requirements.txt
-
+        
   crawl-list:
     needs: prepare  # 🛑 Đảm bảo chạy sau khi `prepare` hoàn thành
     runs-on: ubuntu-latest
