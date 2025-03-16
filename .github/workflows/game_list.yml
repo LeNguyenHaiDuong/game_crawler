@@ -1,0 +1,47 @@
+name: VGChartz Full Scraper
+
+on:
+  workflow_dispatch:  # Chạy thủ công trên GitHub Actions
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.9"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run VGChartz Full Scraper
+        run: python -u source/vgchartzfull.py || echo "Script failed, check logs."
+
+      - name: Upload Scraped Data
+        uses: actions/upload-artifact@v4
+        with:
+          name: vgchartz-scraped-data
+          path: data/vgchartz.csv
+          if-no-files-found: error
+
+      - name: Commit & Push Scraped Data
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "actions@github.com"
+
+          git add data/vgchartz.csv
+          if git diff --cached --quiet; then
+            echo "⚠️ No changes detected, skipping commit."
+          else
+            git commit -m "Updated VGChartz full scraped data"
+            git push origin master || (echo "⚠️ Push failed, retrying..." && sleep 10 && git push origin master)
+          fi

@@ -32,7 +32,7 @@ jobs:
         run: ls -lah data/
 
       - name: Run merge_data.py
-        run: python merge_data.py || echo "Merge script failed, check logs."
+        run: python source/merge_data.py || echo "Merge script failed, check logs."
 
       - name: Upload Merged File as Artifact
         uses: actions/upload-artifact@v4
