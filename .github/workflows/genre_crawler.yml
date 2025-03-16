@@ -63,18 +63,18 @@ jobs:
             echo "❌ Error: File $FILE_PATH not found. Exiting."
             exit 1
           fi
+
+          # 🛠️ Cập nhật repo với phiên bản mới nhất, tránh lỗi xung đột
+          git pull --rebase origin master || echo "⚠️ Pull failed, continuing..."
+          
+          # ✅ Chỉ add file batch hiện tại
+          git add "$FILE_PATH"
           
           # ✅ Kiểm tra xem có thay đổi nào chưa commit không
           if git diff --quiet "$FILE_PATH"; then
             echo "⚠️ No changes detected in $FILE_PATH, skipping commit."
             exit 0
           fi
-          
-          # 🛠️ Cập nhật repo với phiên bản mới nhất, tránh lỗi xung đột
-          git pull --rebase origin master || echo "⚠️ Pull failed, continuing..."
-          
-          # ✅ Chỉ add file batch hiện tại
-          git add "$FILE_PATH"
           
           # 🚀 Commit thay đổi nếu có
           git commit -m "Batch ${{ matrix.batch_id }} progress"
