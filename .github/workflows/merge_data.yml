@@ -38,7 +38,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: merged-vgsales-data
-          path: data/vgsales_merged.csv
+          path: data/vgsales.csv
           if-no-files-found: error
 
       - name: Commit & Push Merged Data
@@ -47,7 +47,7 @@ jobs:
           git config --global user.email "actions@github.com"
           git pull --rebase origin master || echo "⚠️ Pull failed, continuing..."
           
-          git add data/vgsales_merged.csv
+          git add data/vgsales.csv
           if git diff --cached --quiet; then
             echo "⚠️ No changes detected, skipping commit."
           else
