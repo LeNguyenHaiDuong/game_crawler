@@ -77,13 +77,10 @@ jobs:
           git add "$FILE_PATH"
           
           # 🚀 Commit thay đổi nếu có
-          git commit -m "Batch 10 progress"
+          git commit -m "Batch ${{ matrix.batch_id }} progress"
           
           # 🔄 Thử push, nếu thất bại thì thử lại nhiều lần với delay random
           while true; do
-          # 🛠️ Cập nhật repo với phiên bản mới nhất, tránh lỗi xung đột
-            git pull --rebase origin master || echo "⚠️ Pull failed, continuing..."
-            
             if git push origin HEAD:master; then
               echo "✅ Push successful!"
               exit 0
@@ -91,6 +88,7 @@ jobs:
               SLEEP_TIME=$(shuf -i 1-10 -n 1)  # Random số giây từ 1-10
               echo "⚠️ Push failed, retrying in $SLEEP_TIME seconds..."
               sleep $SLEEP_TIME
+              git pull --rebase origin master || echo "⚠️ Pull failed, continuing..."
             fi
           done
 
