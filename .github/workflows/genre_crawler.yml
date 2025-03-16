@@ -71,7 +71,7 @@ jobs:
           git add -A
           
           # ✅ Kiểm tra xem có thay đổi nào chưa commit không
-          if git diff --quiet "$FILE_PATH"; then
+          if git diff --cached --quiet; then
             echo "⚠️ No changes detected in $FILE_PATH, skipping commit."
             exit 0
           fi
