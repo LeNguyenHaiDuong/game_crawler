@@ -17,7 +17,10 @@ jobs:
         id: set-batch
         run: |
           BATCH_IDS=$(seq 0 66 | jq -R -s 'split("\n")[:-1]' | jq -c)
-          echo "batch_ids=$BATCH_IDS" >> $GITHUB_OUTPUT
+          echo "Generated batch_ids: $BATCH_IDS"
+          
+          # 🔥 Đúng cú pháp cho GitHub Actions
+          echo "batch_ids=$BATCH_IDS" >> "$GITHUB_OUTPUT"
         shell: bash
 
       # 🏆 Cache toàn bộ môi trường Python để dùng lại ở các job sau
