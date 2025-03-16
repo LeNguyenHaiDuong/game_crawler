@@ -1,4 +1,4 @@
-name: VGChartz Full Scraper
+name: VGChartz List Scraper
 
 on:
   workflow_dispatch:  # Chạy thủ công trên GitHub Actions
@@ -22,6 +22,9 @@ jobs:
 
       - name: Install dependencies
         run: pip install -r requirements.txt
+
+      - name: Ensure data directory exists
+        run: mkdir -p data
 
       - name: Run VGChartz Full Scraper
         run: python -u source/vgchartzfull.py || echo "Script failed, check logs."
