@@ -43,7 +43,15 @@ jobs:
         with:
           python-version: "3.9"
 
-      - name: Install dependencies
+      - name: Cache Python dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip  # Vị trí lưu cache
+          key: dependencies-${{ runner.os }}-python-${{ hashFiles('requirements.txt') }}
+          restore-keys: |
+            dependencies-${{ runner.os }}-python-
+
+      - name: Install dependencies (if not cached)
         run: pip install -r requirements.txt
 
       - name: Run genre.py for Batch ${{ matrix.batch_id }}
