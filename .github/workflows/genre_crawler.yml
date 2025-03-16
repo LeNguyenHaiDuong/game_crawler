@@ -81,6 +81,9 @@ jobs:
           
           # 🔄 Thử push, nếu thất bại thì thử lại nhiều lần với delay random
           while true; do
+          # 🛠️ Cập nhật repo với phiên bản mới nhất, tránh lỗi xung đột
+            git pull --rebase origin master || echo "⚠️ Pull failed, continuing..."
+            
             if git push origin HEAD:master; then
               echo "✅ Push successful!"
               exit 0
