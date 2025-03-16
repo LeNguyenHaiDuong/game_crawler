@@ -68,7 +68,7 @@ jobs:
           git pull --rebase origin master || echo "⚠️ Pull failed, continuing..."
           
           # ✅ Chỉ add file batch hiện tại
-          git add -A
+          git add "$FILE_PATH"
           
           # ✅ Kiểm tra xem có thay đổi nào chưa commit không
           if git diff --cached --quiet; then
