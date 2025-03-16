@@ -57,7 +57,7 @@ jobs:
           git config --global user.email "actions@github.com"
 
           # Chỉ add file batch hiện tại
-          git add $(git ls-files -m)
+          git add .
           
           # Kiểm tra xem file có thay đổi gì không
           if git diff --cached --quiet; then
