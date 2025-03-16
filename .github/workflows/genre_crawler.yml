@@ -55,15 +55,14 @@ jobs:
         run: |
           git config --global user.name "github-actions"
           git config --global user.email "actions@github.com"
-          
-          FILE_PATH="data/vgsales_updated_${{ matrix.batch_id }}.csv"
+        
 
           while true; do
             # Cập nhật repo với phiên bản mới nhất
             git pull --rebase origin master || echo "⚠️ Pull failed, continuing..."
 
             # Chỉ add file batch hiện tại
-            git add "$FILE_PATH"
+            git add .
 
             # Kiểm tra xem file có thay đổi gì không
             if git diff --cached --quiet; then
