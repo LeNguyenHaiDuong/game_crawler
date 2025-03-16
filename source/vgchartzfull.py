@@ -4,7 +4,6 @@ import urllib.request
 import math
 import csv
 
-
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import threading
 
@@ -28,7 +27,7 @@ list_attr = [0, 2, 4, 5]
 list_attr.extend(range(6, 17))
 
 
-with open("./data/vgsales.csv", mode="w", newline="", encoding="utf-8") as file:
+with open("../data/vgsales.csv", mode="w", newline="", encoding="utf-8") as file:
     writer = csv.writer(file, delimiter=",")
     writer.writerow([
         "Rank", "Name", "Platform", "Publisher", "Developer", "VGChartz Score",
@@ -60,31 +59,12 @@ def fetch_page(page):
 def extract_value(data, idx):
     """Hàm lấy giá trị từ cột, hỗ trợ chuyển đổi float và cắt ký tự cuối."""
     return data[idx].get_text(strip=True)
-    
-
-
-
-def get_genre(url):
-    
-    # try:
-    #     # Gửi request và đọc dữ liệu
-    #     site_raw = urllib.request.urlopen(url).read()
-    #     sub_soup = BeautifulSoup(site_raw, "html.parser")
-    #     h2s = sub_soup.find("div", {"id": "gameGenInfoBox"}).find_all("h2")
-    #     for h2 in h2s:
-    #         if h2.string == "Genre":
-    #             return h2.next_sibling.string
-
-    # except Exception as e:
-    #     return url
-    
-    return url
 
 
     
 def write_worker():
     """Luồng ghi file liên tục lấy dữ liệu từ hàng đợi"""
-    with open("./data/vgsales.csv", mode="a", newline="", encoding="utf-8") as file:
+    with open("../data/vgsales.csv", mode="a", newline="", encoding="utf-8") as file:
         writer = csv.writer(file, delimiter=",")
         
         while True:
@@ -104,7 +84,6 @@ def process_game_tags(game_tags):
         scores_sales = [extract_value(data, i) for i in list_attr]
         rank, gname, publisher, developer, vg_score, critic, user, total_shipped, sales_gl, sales_na, sales_pal, sales_jp, sales_ot, release_date, last_update = scores_sales
 
-        # genre = get_genre(tag.attrs['href'])
         genre = tag.attrs['href']
 
         # Đẩy dữ liệu vào hàng đợi
