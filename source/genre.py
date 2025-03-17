@@ -71,10 +71,9 @@ try:
     df = pd.read_csv(output_file, usecols=cols_to_read, low_memory=False)
     print(f"✅ Processing Batch {batch_id}: Rows {start_idx} to {end_idx}")
 except FileNotFoundError:
-    # Nếu file đã cập nhật tồn tại, thì đọc vào để tránh ghi đè dữ liệu đã có
     df = pd.read_csv("data/vgsales.csv", low_memory=False)
     df = df.iloc[start_idx:end_idx]
-    print(f"Không tìm thấy vgsales_updated_{batch_id}.csv, sẽ tạo file mới.")
+    print(f"Không tìm thấy {output_file}, sẽ tạo file mới.")
 
 # Kiểm tra cột Genre có tồn tại
 if "Genre" not in df.columns:

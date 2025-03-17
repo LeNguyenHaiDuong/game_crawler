@@ -22,8 +22,7 @@ print(f"✅ File đã lưu tại: {OUTPUT_FILE}")
 # Hàng đợi để chứa dữ liệu cần ghi
 write_queue = queue.Queue()
 
-# num_games = 66025 # total games on this website at the time running script
-num_games = 5025 # total games on this website at the time running script
+num_games = 66025 # total games on this website at the time running script
 each_queries = 1000
 
 start_page = 1
