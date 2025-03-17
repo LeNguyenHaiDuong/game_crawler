@@ -64,13 +64,13 @@ USER_AGENTS = [
 ]
 
 
-try:
+if os.path.exists(output_file):
     # Đọc file CSV gốc
     print("Đang tải dữ liệu từ vgsales_updated.csv để tiếp tục cập nhật.")
     cols_to_read = ["Rank", "Genre"]  # Chỉ đọc cột cần thiết
     df = pd.read_csv(output_file, usecols=cols_to_read, low_memory=False)
     print(f"✅ Processing Batch {batch_id}: Rows {start_idx} to {end_idx}")
-except FileNotFoundError:
+else:
     df = pd.read_csv("data/vgsales.csv", low_memory=False)
     df = df.iloc[start_idx:end_idx]
     print(f"Không tìm thấy {output_file}, sẽ tạo file mới.")
