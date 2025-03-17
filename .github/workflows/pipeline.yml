@@ -91,6 +91,14 @@ jobs:
             git push origin master || (echo "⚠️ Push failed, retrying..." && sleep 10 && git push origin master)
           fi
 
+      # 📌 Lưu file vgsales.csv vào artifact để dùng trong job scrape
+      - name: Upload vgsales.csv as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: vgsales-data
+          path: data/vgsales.csv
+          if-no-files-found: error  # Báo lỗi nếu file không tồn tại
+
   scrape:
     needs: [prepare, crawl-list]  # 🛑 Đảm bảo chạy sau khi `prepare` hoàn thành
     runs-on: ubuntu-latest
@@ -128,6 +136,25 @@ jobs:
 
       - name: Install dependencies (if not cached)
         run: pip install -r requirements.txt
+
+      - name: Ensure vgsales.csv exists, otherwise pull latest data
+        run: |
+          FILE_PATH="data/vgsales.csv"
+
+          if [ ! -f "$FILE_PATH" ]; then
+            echo "⚠️ $FILE_PATH not found! Pulling latest data..."
+            
+            # 🛠️ Thử pull từ GitHub repo
+            git pull origin master || echo "⚠️ Pull failed, checking artifact..."
+
+            # 🔄 Nếu vẫn không có, thử tải từ artifact
+            if [ ! -f "$FILE_PATH" ]; then
+              echo "⚠️ File still missing! Trying to download from artifact..."
+              gh run download -n vgsales-data --dir data/ || echo "⚠️ Artifact not found, skipping..."
+            fi
+          else
+            echo "✅ $FILE_PATH already exists, skipping pull."
+          fi
 
       
       - name: Run genre.py for Batch ${{ matrix.batch_id }}
