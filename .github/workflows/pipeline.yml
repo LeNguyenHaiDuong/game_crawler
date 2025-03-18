@@ -19,7 +19,7 @@ jobs:
       - name: Generate batch list
         id: set-batch
         run: |
-          BATCH_IDS=$(seq 0 66 | jq -R -s 'split("\n")[:-1]' | jq -c)
+          BATCH_IDS=$(seq 0 19 | jq -R -s 'split("\n")[:-1]' | jq -c)
           echo "Generated batch_ids: $BATCH_IDS"
           
           # 🔥 Đúng cú pháp cho GitHub Actions
@@ -158,7 +158,7 @@ jobs:
 
       
       - name: Run genre.py for Batch ${{ matrix.batch_id }}
-        run: python -u source/genre.py ${{ matrix.batch_id }} 1000 || echo "Script failed, check logs."
+        run: python -u source/genre.py ${{ matrix.batch_id }} 3302 || echo "Script failed, check logs."
       
       
       - name: Upload CSV Progress
