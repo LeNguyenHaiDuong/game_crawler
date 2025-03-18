@@ -277,7 +277,6 @@ jobs:
 
       - name: Ensure latest update, otherwise pull latest data
         run: |
-          # 🛠️ Thử pull từ GitHub repo
           git pull origin master || echo "⚠️ Pull failed, checking artifact..."
         
       - name: Run merge_data.py
