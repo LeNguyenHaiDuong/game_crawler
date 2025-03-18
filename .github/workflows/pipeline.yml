@@ -275,8 +275,10 @@ jobs:
       - name: Install dependencies (if not cached)
         run: pip install -r requirements.txt
 
-      - name: List downloaded files
-        run: ls -lah data/
+      - name: Ensure latest update, otherwise pull latest data
+        run: |
+          # 🛠️ Thử pull từ GitHub repo
+          git pull origin master || echo "⚠️ Pull failed, checking artifact..."
         
       - name: Run merge_data.py
         run: python source/merge_data.py || echo "Merge script failed, check logs."
