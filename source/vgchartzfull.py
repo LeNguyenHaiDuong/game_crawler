@@ -6,26 +6,31 @@ import csv
 import os
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import threading
-
+import sys
 import queue
 
 # Định nghĩa thư mục lưu file (game_crawler/data/)
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))  # Trỏ đến thư mục game_crawler/
 DATA_DIR = os.path.join(BASE_DIR, "data")  
-OUTPUT_FILE = os.path.join(DATA_DIR, "vgsales.csv")
+# OUTPUT_FILE = os.path.join(DATA_DIR, "vgsales.csv")
 
 # 🔥 Đảm bảo thư mục `data/` tồn tại trước khi lưu file
 os.makedirs(DATA_DIR, exist_ok=True)
 
-print(f"✅ File đã lưu tại: {OUTPUT_FILE}")
+batch_id = int(sys.argv[1])
+
+# Tạo file output riêng cho batch
+OUTPUT_FILE = os.path.join(DATA_DIR, f"vgsales_batch_{batch_id}.csv")
+print(f"✅ Batch {batch_id}: Lưu dữ liệu tại {OUTPUT_FILE}")
+
 
 # Hàng đợi để chứa dữ liệu cần ghi
 write_queue = queue.Queue()
 
-num_games = 66025 # total games on this website at the time running script
+num_games = 4000 # total games this batch will crawl
 each_queries = 1000
 
-start_page = 1
+start_page = batch_id * 4
 end_page = math.ceil(num_games / each_queries)
 
 urlhead = 'http://www.vgchartz.com/gamedb/?page='
@@ -60,7 +65,6 @@ def fetch_page(page):
             lambda x: x.get('href', '').startswith('https://www.vgchartz.com/game/'),
             soup.find_all("a")
         ))
-
         return game_tags
     except Exception as e:
         print(f"Error fetching page {page}: {e}")
@@ -108,7 +112,7 @@ def main():
     writer_thread = threading.Thread(target=write_worker, daemon=True)
     writer_thread.start()
 
-    with ThreadPoolExecutor(max_workers=5) as executor:
+    with ThreadPoolExecutor(max_workers=10) as executor:
         futures = [executor.submit(process_game_tags, fetch_page(page)) for page in range(start_page, end_page + 1)]
         for future in as_completed(futures):
             future.result()  # Đảm bảo các luồng xử lý hoàn tất

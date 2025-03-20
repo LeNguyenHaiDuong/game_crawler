@@ -50,6 +50,9 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write  # Cấp quyền ghi vào repo
+    strategy:
+      matrix:
+        batch_id: ${{ fromJson(needs.prepare.outputs.batch_ids) }}  # Chạy từng batch song song
     
     steps:
       - name: Checkout code
@@ -74,22 +77,8 @@ jobs:
       - name: Install dependencies (if not cached)
         run: pip install -r requirements.txt
 
-          
-      - name: Run VGChartz Full Scraper
-        run: python -u source/vgchartzfull.py || echo "Script failed, check logs."
-
-      - name: Commit & Push Scraped Data
-        run: |
-          git config --global user.name "github-actions"
-          git config --global user.email "actions@github.com"
-
-          git add .
-          if git diff --cached --quiet; then
-            echo "⚠️ No changes detected, skipping commit."
-          else
-            git commit -m "Updated VGChartz full scraped data"
-            git push origin master || (echo "⚠️ Push failed, retrying..." && sleep 10 && git push origin master)
-          fi
+      - name: Run Scraper for Batch ${{ matrix.batch_id }}
+        run: python -u source/vgchartzfull.py ${{ matrix.batch_id }}  
 
       # 📌 Lưu file vgsales.csv vào artifact để dùng trong job scrape
       - name: Upload vgsales.csv as artifact
@@ -99,8 +88,47 @@ jobs:
           path: data/vgsales.csv
           if-no-files-found: error  # Báo lỗi nếu file không tồn tại
 
+  merge-batches:
+    needs: crawl-list
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Restore Python environment
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: python-${{ runner.os }}-${{ hashFiles('requirements.txt') }}
+          restore-keys: |
+            python-${{ runner.os }}-
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.9"
+
+      - name: Install dependencies (if not cached)
+        run: pip install -r requirements.txt
+
+      - name: Download all batch files
+        uses: actions/download-artifact@v4
+        with:
+          path: data/
+          merge-multiple: true  # Gộp tất cả artifacts vào thư mục data/
+
+      - name: Merge batch files
+        run: python -u source/merge_batches.py
+
+      - name: Upload final merged file
+        uses: actions/upload-artifact@v4
+        with:
+          name: vgsales-final
+          path: data/vgsales_final.csv
+          if-no-files-found: error
+
   scrape:
-    needs: [prepare, crawl-list]  # 🛑 Đảm bảo chạy sau khi `prepare` hoàn thành
+    needs: [prepare, merge-batches]  # 🛑 Đảm bảo chạy sau khi `prepare` hoàn thành
     runs-on: ubuntu-latest
     permissions:
       contents: write  # Cấp quyền ghi vào repo
@@ -137,25 +165,31 @@ jobs:
       - name: Install dependencies (if not cached)
         run: pip install -r requirements.txt
 
-      - name: Ensure vgsales.csv exists, otherwise pull latest data
-        run: |
-          FILE_PATH="data/vgsales.csv"
+      # - name: Ensure vgsales.csv exists, otherwise pull latest data
+      #   run: |
+      #     FILE_PATH="data/vgsales.csv"
 
-          if [ ! -f "$FILE_PATH" ]; then
-            echo "⚠️ $FILE_PATH not found! Pulling latest data..."
+      #     if [ ! -f "$FILE_PATH" ]; then
+      #       echo "⚠️ $FILE_PATH not found! Pulling latest data..."
             
-            # 🛠️ Thử pull từ GitHub repo
-            git pull origin master || echo "⚠️ Pull failed, checking artifact..."
+      #       # 🛠️ Thử pull từ GitHub repo
+      #       git pull origin master || echo "⚠️ Pull failed, checking artifact..."
 
-            # 🔄 Nếu vẫn không có, thử tải từ artifact
-            if [ ! -f "$FILE_PATH" ]; then
-              echo "⚠️ File still missing! Trying to download from artifact..."
-              gh run download -n vgsales-data --dir data/ || echo "⚠️ Artifact not found, skipping..."
-            fi
-          else
-            echo "✅ $FILE_PATH already exists, skipping pull."
-          fi
+      #       # 🔄 Nếu vẫn không có, thử tải từ artifact
+      #       if [ ! -f "$FILE_PATH" ]; then
+      #         echo "⚠️ File still missing! Trying to download from artifact..."
+      #         gh run download -n vgsales-data --dir data/ || echo "⚠️ Artifact not found, skipping..."
+      #       fi
+      #     else
+      #       echo "✅ $FILE_PATH already exists, skipping pull."
+      #     fi
 
+      - name: Download vgsales.csv
+        uses: actions/download-artifact@v4
+        with:
+          name: vgsales-dataset
+          path: data/
+  
       
       - name: Run genre.py for Batch ${{ matrix.batch_id }}
         run: python -u source/genre.py ${{ matrix.batch_id }} 5 || echo "Script failed, check logs."
