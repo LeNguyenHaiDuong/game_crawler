@@ -8,7 +8,7 @@ OUTPUT_FILE = os.path.join(DATA_DIR, "vgsales.csv")
 
 # Tìm tất cả batch files
 csv_files = sorted(
-    [os.path.join(DATA_DIR, f) for f in os.listdir(DATA_DIR) if f.startswith(" vgsales_batch_")]
+    [os.path.join(DATA_DIR, f) for f in os.listdir(DATA_DIR) if f.startswith("vgsales_batch_")]
 )
 
 print(csv_files)
