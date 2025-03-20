@@ -84,8 +84,8 @@ jobs:
       - name: Upload vgsales.csv as artifact
         uses: actions/upload-artifact@v4
         with:
-          name: vgsales-data
-          path: data/vgsales.csv
+          name: vgsales-data-batch-${{ matrix.batch_id }}  # Thêm batch_id vào tên artifact
+          path: data/vgsales_batch_${{ matrix.batch_id }}.csv  # Đảm bảo tên file đầu ra đúng
           if-no-files-found: error  # Báo lỗi nếu file không tồn tại
 
   merge-batches:
