@@ -116,10 +116,7 @@ jobs:
           path: artifacts/
           merge-multiple: true  # Gộp tất cả artifacts vào thư mục data/
 
-      - name: Check downloaded files structure
-        run: |
-          echo "Tree structure of data/ folder:"
-          find data/ -type f | sort
+        
         
       - name: Move CSV files to data/
         run: |
@@ -127,6 +124,11 @@ jobs:
           find artifacts/ -type f -name "*.csv" -exec mv {} data/ \;
           ls -l data/
         
+
+      - name: Print folder structure
+        run: |
+          sudo apt-get install tree -y  # Cài đặt tree nếu chưa có (chỉ cần trên Ubuntu)
+          tree data/
 
       # - name: Move batch files to data folder
       #   run: |
