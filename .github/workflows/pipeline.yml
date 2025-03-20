@@ -113,13 +113,19 @@ jobs:
       - name: Download all batch files
         uses: actions/download-artifact@v4
         with:
-          path: data/
+          path: artifacts/
           merge-multiple: true  # Gộp tất cả artifacts vào thư mục data/
 
       - name: Check downloaded files structure
         run: |
           echo "Tree structure of data/ folder:"
           find data/ -type f | sort
+        
+      - name: Move CSV files to data/
+        run: |
+          mkdir -p data/
+          find artifacts/ -type f -name "*.csv" -exec mv {} data/ \;
+          ls -l data/
         
 
       # - name: Move batch files to data folder

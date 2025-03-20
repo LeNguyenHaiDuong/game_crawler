@@ -31,7 +31,7 @@ num_games = 4000 # total games this batch will crawl
 each_queries = 1000
 
 start_page = batch_id * 4
-end_page = math.ceil(num_games / each_queries)
+end_page = start_page + 4
 
 urlhead = 'http://www.vgchartz.com/gamedb/?page='
 urltail = '&console=&region=All&developer=&publisher=&genre=&boxart=Both&ownership=Both&order=Sales&ownership=Both&direction=DESC&showtotalsales=1&shownasales=1&showpalsales=1&showjapansales=1&showothersales=1&showpublisher=1&showdeveloper=1&showreleasedate=1&showlastupdate=1&showvgchartzscore=1&showcriticscore=1&showuserscore=1&showshipped=1'
