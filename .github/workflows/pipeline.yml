@@ -80,7 +80,6 @@ jobs:
       - name: Run Scraper for Batch ${{ matrix.batch_id }}
         run: python -u source/vgchartzfull.py ${{ matrix.batch_id }}  
 
-      # 📌 Lưu file vgsales.csv vào artifact để dùng trong job scrape
       - name: Upload vgsales.csv as artifact
         uses: actions/upload-artifact@v4
         with:
@@ -116,6 +115,12 @@ jobs:
         with:
           path: data/
           merge-multiple: true  # Gộp tất cả artifacts vào thư mục data/
+
+      - name: Move batch files to data folder
+        run: |
+          mv data/*/*.csv data/  # Di chuyển tất cả file CSV vào thư mục data/
+          ls -l data/  # Kiểm tra lại danh sách file
+  
 
       - name: Merge batch files
         run: python -u source/merge_batches.py
