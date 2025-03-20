@@ -118,7 +118,8 @@ jobs:
 
       - name: Move batch files to data folder
         run: |
-          mv data/*/*.csv data/  # Di chuyển tất cả file CSV vào thư mục data/
+          mkdir -p data/
+          mv */*.csv data/  # Di chuyển tất cả file CSV vào thư mục data/
           ls -l data/  # Kiểm tra lại danh sách file
   
 
