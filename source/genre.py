@@ -73,13 +73,14 @@ if os.path.exists(output_file):
 else:
     df = pd.read_csv("data/vgsales.csv", low_memory=False)
     df = df.iloc[start_idx:end_idx]
+    df["Developers"] = "Unknown"  # Thêm cột mới vào DataFrame
     print(f"Không tìm thấy {output_file}, sẽ tạo file mới.")
 
 # Kiểm tra cột Genre có tồn tại
 if "Genre" not in df.columns:
     raise ValueError("Cột 'Genre' không tồn tại trong file CSV!")
 
-def get_Genre(url):
+def get_Info(url):
     headers = {
         "User-Agent": random.choice(USER_AGENTS)
     }
@@ -96,16 +97,23 @@ def get_Genre(url):
         h2s = info_box.find_all("h2")
         for h2 in h2s:
             if h2.string == "Genre":
-                return h2.next_sibling.string.strip()
+                genre = h2.find_next_sibling("p").text.strip()
+
+            elif h2.string == "Developer":
+                devs = h2.find_next_sibling("p")  # Lấy phần tử đầu tiên chứa developer
+                if devs:
+                    developers = ", ".join([p.text.strip() for p in info_box.find_all("p") if p.find_previous_sibling("h2") and p.find_previous_sibling("h2").text == "Developer"])
+
+        return genre, developers  # Trả về cả Genre và Developers
     
     except:
         print("Cannot get:", url)
-        return url  # Trả về lỗi để xử lý sau
+        return url, "Unknown"  # Trả về lỗi để xử lý sau
 
 def process_row(idx, url):
-    """Hàm xử lý từng dòng, gọi get_Genre với URL."""
-    Genre = get_Genre(url)
-    return idx, Genre
+    """Hàm xử lý từng dòng, gọi get_Info với URL."""
+    genre, developers = get_Info(url)
+    return idx, genre, developers
 
 # Lọc các dòng cần cập nhật (chỉ cập nhật nếu vẫn là URL)
 rows_to_update = [(idx, row["Genre"]) for idx, row in df.iterrows() if len(row["Genre"]) > 20]
@@ -119,16 +127,18 @@ batch_size_update = 100
 count = 0
 
 for idx, url in rows_to_update:
-    idx, new_Genre = process_row(idx, url)  # Gọi hàm lấy Genre
-    while (len(new_Genre) > 20):
+    idx, new_Genre, new_Developers = process_row(idx, url)  # Gọi hàm lấy Genre & Developers
+    while len(new_Genre) > 20:
         df.to_csv(output_file, index=False)
         print(f"Saved until line {idx}")
         print("Retry in 180s")
         time.sleep(180)
-        idx, new_Genre = process_row(idx, url)  # Gọi hàm lấy Genre
+        idx, new_Genre, new_Developers = process_row(idx, url)  # Gọi lại hàm lấy dữ liệu
 
     print(f"Update indx {idx}")
     df.at[idx, "Genre"] = new_Genre  # Cập nhật giá trị mới
+    df.at[idx, "Developers"] = new_Developers  # Cập nhật danh sách nhà phát triển
+    
     count += 1
 
     if count == batch_size_update:

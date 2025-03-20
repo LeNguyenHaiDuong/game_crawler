@@ -1,0 +1,47 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <title>Stlite App</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@stlite/mountable@0.63.1/build/stlite.css"
+    />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script src="https://cdn.jsdelivr.net/npm/@stlite/mountable@0.63.1/build/stlite.js"></script>
+    <script>
+      stlite.mount(
+        {
+        requirements: ["simpy"], // Packages to install
+        entrypoint: "app.py",
+        files: {
+      "app.py":`
+import streamlit as st
+
+pg = st.navigation([
+        st.Page("home_page.py", title="Welcome!", icon=":material/add_circle:"),
+        st.Page("des_page.py", title="Run Simulation", icon=":material/laptop:")
+     ])
+
+pg.run()
+`,
+"home_page.py": {
+        url: "https://raw.githubusercontent.com/Bergam0t/stlite_multipage_example_hsma/refs/heads/main/home_page.py"
+      },
+"des_page.py": {
+        url: "https://raw.githubusercontent.com/Bergam0t/stlite_multipage_example_hsma/refs/heads/main/des_page.py"
+      }
+}
+        },
+        document.getElementById("root"),
+      );
+    </script>
+  </body>
+</html>
