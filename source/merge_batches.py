@@ -21,16 +21,19 @@ if not csv_files:
 dfs = []
 
 for i, file in enumerate(csv_files):
-    if i == 0:
-        # File đầu tiên giữ nguyên cột
-        df = pd.read_csv(file, low_memory=False)
-    else:
-        # Các file sau bỏ dòng tiêu đề (header=None, skiprows=1)
-        df = pd.read_csv(file, low_memory=False, header=None, skiprows=1)
-        df.columns = dfs[0].columns  # Đặt lại tên cột theo file đầu tiên
-    
-    dfs.append(df)
-
+    try:
+        if i == 0:
+            # File đầu tiên giữ nguyên cột
+            df = pd.read_csv(file, low_memory=False)
+        else:
+            # Các file sau bỏ dòng tiêu đề
+            df = pd.read_csv(file, low_memory=False, header=None, skiprows=1)
+            df.columns = dfs[0].columns  # Đặt lại tên cột theo file đầu tiên
+        
+        dfs.append(df)
+    except Exception as e:
+        print(f"⚠️ Bỏ qua file {file} do lỗi: {e}")
+        
 merged_df = pd.concat(dfs, ignore_index=True)
 
 # Loại bỏ trùng lặp theo Rank (giữ giá trị mới nhất)
