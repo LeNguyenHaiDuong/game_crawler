@@ -202,8 +202,9 @@ jobs:
           path: data/vgsales_updated_${{ matrix.batch_id }}.csv
           if-no-files-found: warn
           overwrite: true  # 🔥 Cho phép ghi đè nếu file đã tồn tại
+      
 
-  extract-csv:
+  final-commit:
     needs: [prepare, scrape]  # Chạy sau khi tất cả batch hoàn thành
     runs-on: ubuntu-latest
     permissions:
@@ -214,7 +215,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-
+      
       # ✅ Dùng lại cache Python từ `prepare`
       - name: Restore Python environment
         uses: actions/cache@v4
@@ -244,73 +245,9 @@ jobs:
         run: |
           mkdir -p data/  # Đảm bảo thư mục `data/` tồn tại
           find batch-results/ -type f -name "vgsales_updated_*.csv" -exec mv {} data/ \;
+          find batch-results/ -type f -name "vgsales.csv" -exec mv {} data/ \;
           ls -lah data/  # Kiểm tra sau khi di chuyển
 
-      - name: Commit & Push all Batch Updates
-        run: |
-          git config --global user.name "github-actions"
-          git config --global user.email "actions@github.com"
-
-          # 🛠️ Cập nhật repo với phiên bản mới nhất
-          git pull --rebase origin master || echo "⚠️ Pull failed, continuing..."
-
-          # ✅ Chỉ add file .csv trong `data/`, bỏ qua thư mục khác
-          git add data/*.csv || echo "⚠️ No CSV files to add."
-
-          # 🛑 Kiểm tra xem có thay đổi nào chưa commit không
-          if git diff --cached --quiet; then
-            echo "⚠️ No changes detected, skipping commit."
-            exit 0
-          fi
-
-          # 🚀 Commit tất cả file CSV cùng một lúc
-          git commit -m "🔥 Updated all batch CSV files"
-
-          # 🔄 Thử push, nếu thất bại thì thử lại nhiều lần với delay random
-          while true; do
-            if git push origin master; then
-              echo "✅ Push successful!"
-              exit 0
-            else
-              SLEEP_TIME=$(shuf -i 1-10 -n 1)  # Random số giây từ 1-10
-              echo "⚠️ Push failed, retrying in $SLEEP_TIME seconds..."
-              sleep $SLEEP_TIME
-              git pull --rebase origin master || echo "⚠️ Pull failed, continuing..."
-            fi
-          done
-
-  final-commit:
-    needs: [prepare, extract-csv]  # Chạy sau khi tất cả batch hoàn thành
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-      
-      # ✅ Dùng lại cache Python từ `prepare`
-      - name: Restore Python environment
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/pip
-          key: python-${{ runner.os }}-${{ hashFiles('requirements.txt') }}
-          restore-keys: |
-            python-${{ runner.os }}-
-            
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.9"
-
-      - name: Install dependencies (if not cached)
-        run: pip install -r requirements.txt
-
-      - name: Ensure latest update, otherwise pull latest data
-        run: |
-          git pull origin master || echo "⚠️ Pull failed, checking artifact..."
         
       - name: Run merge_data.py
         run: python source/merge_data.py || echo "Merge script failed, check logs."
