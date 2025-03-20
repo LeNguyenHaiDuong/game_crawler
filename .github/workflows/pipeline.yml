@@ -116,11 +116,17 @@ jobs:
           path: data/
           merge-multiple: true  # Gộp tất cả artifacts vào thư mục data/
 
-      - name: Move batch files to data folder
+      - name: Check downloaded files structure
         run: |
-          mkdir -p data/
-          mv */*.csv data/  # Di chuyển tất cả file CSV vào thư mục data/
-          ls -l data/  # Kiểm tra lại danh sách file
+          echo "Tree structure of data/ folder:"
+          find data/ -type f | sort
+        
+
+      # - name: Move batch files to data folder
+      #   run: |
+      #     mkdir -p data/
+      #     mv */*.csv data/  # Di chuyển tất cả file CSV vào thư mục data/
+      #     ls -l data/  # Kiểm tra lại danh sách file
   
 
       - name: Merge batch files
