@@ -1,8 +1,7 @@
 import os
 import pandas as pd
 
-# BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))  # Trỏ đến thư mục game_crawler/
-# DATA_DIR = os.path.join(BASE_DIR, "data")  
+
 DATA_DIR = "./data"
 OUTPUT_FILE = os.path.join(DATA_DIR, "vgsales.csv")
 

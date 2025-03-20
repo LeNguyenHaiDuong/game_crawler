@@ -129,22 +129,20 @@ jobs:
         run: |
           sudo apt-get install tree -y  # Cài đặt tree nếu chưa có (chỉ cần trên Ubuntu)
           tree data/
-
-      # - name: Move batch files to data folder
-      #   run: |
-      #     mkdir -p data/
-      #     mv */*.csv data/  # Di chuyển tất cả file CSV vào thư mục data/
-      #     ls -l data/  # Kiểm tra lại danh sách file
   
-
       - name: Merge batch files
         run: python -u source/merge_batches.py
+
+      - name: Remove batch files after merging
+        run: |
+          find data/ -type f -name "vgsales_batch_*.csv" -exec rm {} \;
+          echo "Batch files removed after merging."
 
       - name: Upload final merged file
         uses: actions/upload-artifact@v4
         with:
-          name: vgsales-final
-          path: data/vgsales_final.csv
+          name: vgsales-dataset
+          path: data/vgsales.csv
           if-no-files-found: error
 
   scrape:
@@ -184,25 +182,6 @@ jobs:
 
       - name: Install dependencies (if not cached)
         run: pip install -r requirements.txt
-
-      # - name: Ensure vgsales.csv exists, otherwise pull latest data
-      #   run: |
-      #     FILE_PATH="data/vgsales.csv"
-
-      #     if [ ! -f "$FILE_PATH" ]; then
-      #       echo "⚠️ $FILE_PATH not found! Pulling latest data..."
-            
-      #       # 🛠️ Thử pull từ GitHub repo
-      #       git pull origin master || echo "⚠️ Pull failed, checking artifact..."
-
-      #       # 🔄 Nếu vẫn không có, thử tải từ artifact
-      #       if [ ! -f "$FILE_PATH" ]; then
-      #         echo "⚠️ File still missing! Trying to download from artifact..."
-      #         gh run download -n vgsales-data --dir data/ || echo "⚠️ Artifact not found, skipping..."
-      #       fi
-      #     else
-      #       echo "✅ $FILE_PATH already exists, skipping pull."
-      #     fi
 
       - name: Download vgsales.csv
         uses: actions/download-artifact@v4
