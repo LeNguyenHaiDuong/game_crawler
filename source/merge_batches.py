@@ -1,14 +1,17 @@
 import os
 import pandas as pd
 
-BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))  # Trỏ đến thư mục game_crawler/
-DATA_DIR = os.path.join(BASE_DIR, "data")  
+# BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))  # Trỏ đến thư mục game_crawler/
+# DATA_DIR = os.path.join(BASE_DIR, "data")  
+DATA_DIR = "./data"
 OUTPUT_FILE = os.path.join(DATA_DIR, "vgsales.csv")
 
 # Tìm tất cả batch files
 csv_files = sorted(
     [os.path.join(DATA_DIR, f) for f in os.listdir(DATA_DIR) if f.startswith(" vgsales_batch_")]
 )
+
+print(csv_files)
 
 if not csv_files:
     print("⚠️ Không có batch nào để gộp!")
