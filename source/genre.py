@@ -91,9 +91,7 @@ def get_Info(url):
         
         # Tìm div chứa thông tin game
         info_box = soup.find("div", {"id": "gameGenInfoBox"})
-        if not info_box:
-            return "Unknown"  # Nếu không tìm thấy thông tin
-
+        
         h2s = info_box.find_all("h2")
         for h2 in h2s:
             if h2.string == "Genre":
@@ -104,6 +102,7 @@ def get_Info(url):
                 if devs:
                     developers = ", ".join([p.text.strip() for p in info_box.find_all("p") if p.find_previous_sibling("h2") and p.find_previous_sibling("h2").text == "Developer"])
 
+        time.sleep(2)
         return genre, developers  # Trả về cả Genre và Developers
     
     except:
