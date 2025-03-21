@@ -110,7 +110,6 @@ def get_Info(url):
                 if devs:
                     developers = ", ".join([p.text.strip() for p in info_box.find_all("p") if p.find_previous_sibling("h2") and p.find_previous_sibling("h2").text == "Developer"])
 
-        time.sleep(2)
         return genre, developers  # Trả về cả Genre và Developers
     
     except:
@@ -139,7 +138,7 @@ for idx, url in rows_to_update:
         df.to_csv(output_file, index=False)
         print(f"Saved until line {idx}")
         print("Retry in 180s")
-        time.sleep(180)
+        time.sleep(120)
         idx, new_Genre, new_Developers = process_row(idx, url)  # Gọi lại hàm lấy dữ liệu
 
     print(f"Update indx {idx}")
