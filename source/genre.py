@@ -90,6 +90,9 @@ def get_Info(url):
         "User-Agent": random.choice(USER_AGENTS)
     }
     try:
+        developers = "Unknown"
+        genre = "Unknown"
+        
         response = requests.get(url, headers=headers, timeout=10)
         response.raise_for_status()  # Kiểm tra lỗi HTTP
         soup = BeautifulSoup(response.text, "html.parser")
