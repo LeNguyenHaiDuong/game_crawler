@@ -74,7 +74,12 @@ else:
     df = pd.read_csv("data/vgsales.csv", low_memory=False)
     df = df.iloc[start_idx:end_idx]
     df["Developers"] = "Unknown"  # Thêm cột mới vào DataFrame
-    print(f"Không tìm thấy {output_file}, sẽ tạo file mới.")
+    print("Đã đọc data/vgsales.csv")
+
+    
+    # Xóa file CSV sau khi đọc
+    os.remove("data/vgsales.csv")
+    print("Đã xóa data/vgsales.csv")
 
 # Kiểm tra cột Genre có tồn tại
 if "Genre" not in df.columns:
